@@ -1,0 +1,160 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import ToolCard from "../components/ToolCard.astro";
+
+const calculators = [
+  {
+    icon: "🎂",
+    href: "/age-calculator",
+    title: "Age Calculator",
+    description: "Find your exact age in years, months and days",
+  },
+  {
+    icon: "🏠",
+    href: "/mortgage-calculator",
+    title: "Mortgage Calculator",
+    description: "Calculate monthly payments and total cost",
+  },
+  {
+    icon: "🧾",
+    href: "/vat-calculator",
+    title: "VAT Calculator",
+    description: "Add or remove VAT from any price instantly",
+  },
+  {
+    icon: "⚖️",
+    href: "/bmi-calculator",
+    title: "BMI Calculator",
+    description: "Check your Body Mass Index and healthy range",
+  },
+  {
+    icon: "💰",
+    href: "/loan-calculator",
+    title: "Loan Calculator",
+    description: "Monthly EMI and total interest for any loan",
+  },
+  {
+    icon: "💱",
+    href: "/currency-converter",
+    title: "Currency Converter",
+    description: "Live exchange rates for 30+ currencies",
+  },
+  {
+    icon: "🥂",
+    href: "/tip-calculator",
+    title: "Tip Calculator",
+    description: "Calculate tip and split the bill easily",
+  },
+  {
+    icon: "📈",
+    href: "/compound-interest-calculator",
+    title: "Compound Interest Calculator",
+    description: "See how your savings grow over time",
+  },
+  {
+    icon: "📅",
+    href: "/date-difference-calculator",
+    title: "Date Difference Calculator",
+    description: "Find days, weeks and months between two dates",
+  },
+  {
+    icon: "％",
+    href: "/percentage-calculator",
+    title: "Percentage Calculator",
+    description: "Three ways to calculate any percentage",
+  },
+];
+---
+
+<BaseLayout
+  title="About CalcHub — Free Online Calculators for Everyone"
+  description="Learn about CalcHub. We build free, fast and accurate online calculators to help with everyday decisions. No ads, no sign-up, always free."
+>
+  <div class="mx-auto w-full max-w-5xl">
+    <div class="rounded-xl border border-border bg-card p-6 shadow-soft sm:p-10">
+      <p class="text-sm font-medium text-muted">About</p>
+      <h1 class="mt-3 font-heading text-3xl tracking-tight sm:text-4xl">
+        Built for Everyone Who Needs a Quick Answer
+      </h1>
+      <p class="mt-4 max-w-3xl text-base leading-relaxed text-muted">
+        CalcHub is a simple idea: when you need a number, you shouldn’t have to fight popups, slow pages, and confusing tools.
+        We build fast, clean calculators that work beautifully on mobile — and stay free forever.
+      </p>
+    </div>
+
+    <section class="mt-12" aria-label="Our mission">
+      <h2 class="font-heading text-2xl">Our Mission</h2>
+      <div class="mt-4 max-w-4xl space-y-4 text-base leading-relaxed text-muted">
+        <p>
+          Online calculators are often slow, full of ads, confusing, and not mobile friendly. You click “calculate” and suddenly you’re scrolling through banners,
+          cookie popups, and pages that feel like they were built for everything except helping you.
+        </p>
+        <p>
+          CalcHub’s goal is the opposite: fast, clean, accurate, and free forever.
+          <span class="text-text font-medium">No sign-up. No ads. No nonsense.</span>
+        </p>
+      </div>
+
+      <div class="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <div class="rounded-xl border border-border bg-card p-6 shadow-soft">
+          <h3 class="font-heading text-lg">Super Fast</h3>
+          <p class="mt-2 text-sm leading-relaxed text-muted">Every calculator loads in under 1 second. No heavy software, no bloat.</p>
+        </div>
+        <div class="rounded-xl border border-border bg-card p-6 shadow-soft">
+          <h3 class="font-heading text-lg">100% Private</h3>
+          <p class="mt-2 text-sm leading-relaxed text-muted">All calculations happen in your browser. We never see your numbers.</p>
+        </div>
+        <div class="rounded-xl border border-border bg-card p-6 shadow-soft">
+          <h3 class="font-heading text-lg">Works Everywhere</h3>
+          <p class="mt-2 text-sm leading-relaxed text-muted">Fully optimised for mobile, tablet and desktop. Use it anywhere, anytime.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="mt-12" aria-label="Our calculators">
+      <div class="flex items-end justify-between gap-4">
+        <h2 class="font-heading text-2xl">Our Calculators</h2>
+        <p class="text-sm text-muted">More tools added regularly</p>
+      </div>
+
+      <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {calculators.map((tool) => (
+          <ToolCard {...tool} />
+        ))}
+      </div>
+    </section>
+
+    <section class="mt-12" aria-label="Accuracy commitment">
+      <h2 class="font-heading text-2xl">Accuracy Commitment</h2>
+      <div class="mt-4 max-w-4xl space-y-4 text-base leading-relaxed text-muted">
+        <p>
+          Every formula is verified against official sources and standard references whenever possible.
+          We also test calculators with known examples to make sure the results match expectations.
+        </p>
+        <p>
+          If you ever spot something that looks off, we genuinely want to hear from you.
+          Accuracy is a promise — and we take it seriously.
+        </p>
+      </div>
+    </section>
+
+    <section class="mt-12" aria-label="Contact">
+      <div class="rounded-xl border border-border bg-card p-6 shadow-soft sm:p-8">
+        <h2 class="font-heading text-2xl">Contact</h2>
+        <p class="mt-3 text-base leading-relaxed text-muted">
+          Email us anytime at <a class="link-accent" href="mailto:hello@calchub.com">hello@calchub.com</a>.
+          Want a new calculator? <a class="link-accent" href="/contact">Suggest a calculator</a> and we’ll add it to the roadmap.
+        </p>
+      </div>
+
+      <div class="mt-10">
+        <a
+          href="/"
+          class="inline-flex items-center justify-center rounded-lg bg-accent px-5 py-3 text-sm font-semibold text-white shadow-sm hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-accent/30"
+        >
+          Explore All Calculators
+        </a>
+      </div>
+    </section>
+  </div>
+</BaseLayout>

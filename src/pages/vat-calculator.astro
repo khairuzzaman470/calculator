@@ -1,0 +1,315 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+<BaseLayout
+  title="VAT Calculator — Add or Remove VAT Instantly | CalcHub"
+  description="Free VAT calculator. Add or remove VAT from any price in seconds. Supports UK, Ireland, Germany, Netherlands and custom rates."
+>
+  <div class="mx-auto w-full max-w-4xl">
+    <nav class="text-sm text-muted" aria-label="Breadcrumb">
+      <a class="hover:text-text" href="/">Home</a>
+      <span class="px-2" aria-hidden="true">›</span>
+      <span class="text-text">VAT Calculator</span>
+    </nav>
+
+    <div class="mt-6">
+      <p class="text-sm font-medium text-muted">Calculator</p>
+      <h1 class="mt-3 font-heading text-3xl tracking-tight sm:text-4xl">VAT Calculator</h1>
+      <p class="mt-4 text-base leading-relaxed text-muted">
+        Add VAT to a net price or remove VAT from a gross price in seconds.
+      </p>
+    </div>
+
+    <section class="mt-8 rounded-xl border border-border bg-card p-6 shadow-soft sm:p-8" aria-label="VAT calculator">
+      <form id="vat-form" class="grid grid-cols-1 gap-4 sm:grid-cols-2" autocomplete="off">
+        <div>
+          <label class="block text-sm font-medium text-text" for="amount">Amount</label>
+          <input
+            id="amount"
+            name="amount"
+            inputmode="decimal"
+            placeholder="e.g. 1000"
+            class="mt-2 w-full rounded-lg border border-border bg-white px-3 py-2 text-text shadow-sm focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
+            required
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-text" for="ratePreset">VAT rate</label>
+          <select
+            id="ratePreset"
+            name="ratePreset"
+            class="mt-2 w-full rounded-lg border border-border bg-white px-3 py-2 text-text shadow-sm focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
+          >
+            <option value="20" selected>20% Standard UK</option>
+            <option value="5">5% Reduced UK</option>
+            <option value="0">0% Zero Rated</option>
+            <option value="23">23% Ireland</option>
+            <option value="19">19% Germany</option>
+            <option value="21">21% Netherlands</option>
+            <option value="25">25% Denmark and Sweden</option>
+            <option value="custom">Custom %</option>
+          </select>
+
+          <div id="customWrap" class="mt-3 hidden">
+            <label class="block text-sm font-medium text-text" for="customRate">Custom VAT (%)</label>
+            <input
+              id="customRate"
+              name="customRate"
+              inputmode="decimal"
+              placeholder="e.g. 17.5"
+              class="mt-2 w-full rounded-lg border border-border bg-white px-3 py-2 text-text shadow-sm focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
+            />
+          </div>
+        </div>
+
+        <fieldset class="sm:col-span-2">
+          <legend class="text-sm font-medium text-text">Calculation type</legend>
+          <div class="mt-3 flex flex-col gap-2 sm:flex-row sm:gap-6">
+            <label class="inline-flex items-center gap-2 text-sm text-muted">
+              <input type="radio" name="mode" value="add" checked />
+              Add VAT (ex-VAT to inc-VAT)
+            </label>
+            <label class="inline-flex items-center gap-2 text-sm text-muted">
+              <input type="radio" name="mode" value="remove" />
+              Remove VAT (inc-VAT to ex-VAT)
+            </label>
+          </div>
+        </fieldset>
+
+        <div class="sm:col-span-2">
+          <button
+            type="submit"
+            class="inline-flex w-full items-center justify-center rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white shadow-sm hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-accent/30 sm:w-auto"
+          >
+            Calculate VAT
+          </button>
+          <p id="error" class="mt-3 hidden text-sm font-medium text-accent"></p>
+        </div>
+      </form>
+
+      <div class="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4" aria-label="VAT results">
+        <div class="rounded-xl border border-border bg-bg p-5">
+          <div class="text-xs font-medium uppercase tracking-wide text-muted">Net amount</div>
+          <div id="net" class="mt-2 font-heading text-2xl text-text">—</div>
+          <div class="mt-2 text-sm text-muted">Excluding VAT</div>
+        </div>
+        <div class="rounded-xl border border-border bg-bg p-5">
+          <div class="text-xs font-medium uppercase tracking-wide text-muted">VAT amount</div>
+          <div id="vat" class="mt-2 font-heading text-2xl text-text">—</div>
+          <div id="rateApplied" class="mt-2 text-sm text-muted">Rate: —</div>
+        </div>
+        <div class="rounded-xl border border-border bg-bg p-5">
+          <div class="text-xs font-medium uppercase tracking-wide text-muted">Gross amount</div>
+          <div id="gross" class="mt-2 font-heading text-2xl text-text">—</div>
+          <div class="mt-2 text-sm text-muted">Including VAT</div>
+        </div>
+        <div class="rounded-xl border border-border bg-bg p-5">
+          <div class="text-xs font-medium uppercase tracking-wide text-muted">VAT rate applied</div>
+          <div id="rateBox" class="mt-2 font-heading text-2xl text-text">—</div>
+          <div class="mt-2 text-sm text-muted">Selected rate</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mt-12" aria-label="VAT calculator guide">
+      <article class="prose max-w-none">
+        <h1 class="font-heading text-2xl text-text">VAT Calculator</h1>
+        <p class="mt-4 text-base leading-relaxed text-muted">
+          VAT (Value Added Tax) is a consumption tax added to many goods and services in the UK and across Europe. If you run a business, work with invoices,
+          or shop online across borders, you’ve probably seen prices quoted as “ex-VAT” (excluding VAT) or “inc-VAT” (including VAT). A VAT calculator makes
+          it easy to move between these two values without guesswork. With CalcHub’s free VAT calculator, you can add VAT to a net amount, or remove VAT from a
+          gross amount, using common rates for the UK, Ireland, Germany, the Netherlands, and more. You can also enter a custom percentage for scenarios like
+          temporary rate changes, special categories, or country-specific rules.
+        </p>
+
+        <h2 class="mt-8 font-heading text-xl text-text">What is VAT?</h2>
+        <p class="mt-3 text-base leading-relaxed text-muted">
+          VAT is charged at each stage of the supply chain where value is added, but the end consumer typically bears the cost. Businesses registered for VAT
+          may charge VAT on sales (output VAT) and reclaim VAT paid on certain purchases (input VAT), depending on local regulations. For everyday users, the key
+          point is simple: if a price is quoted including VAT, part of that price is tax. If a price is quoted excluding VAT, you can calculate the tax and add it
+          to find the final amount due.
+        </p>
+
+        <h2 class="mt-8 font-heading text-xl text-text">How to Calculate VAT</h2>
+        <p class="mt-3 text-base leading-relaxed text-muted">
+          To add VAT, multiply the net price by the VAT rate and add it to the net price. For example, if your net amount is 100 and the VAT rate is 20%, the VAT
+          is 20 and the gross amount is 120. In formula form: VAT = Net × (Rate/100) and Gross = Net + VAT. This is commonly used for invoices that list prices
+          excluding VAT.
+        </p>
+
+        <h2 class="mt-8 font-heading text-xl text-text">How to Remove VAT from a Price</h2>
+        <p class="mt-3 text-base leading-relaxed text-muted">
+          Removing VAT (also called extracting VAT) is different from simply subtracting a percentage. If a gross price already includes VAT, you need to divide by
+          (1 + Rate/100) to find the net amount. Using the same 20% example: if the gross price is 120, the net price is 120 ÷ 1.20 = 100, and the VAT component is
+          20. This method ensures the VAT portion is accurate, especially when rates are high.
+        </p>
+
+        <h2 class="mt-8 font-heading text-xl text-text">VAT Rates by Country in Europe</h2>
+        <p class="mt-3 text-base leading-relaxed text-muted">
+          VAT rates vary across Europe and can include multiple bands such as standard, reduced, and zero rates. The UK commonly uses a 20% standard rate, with
+          reduced and zero-rated categories for specific goods and services. Ireland’s standard rate is often quoted as 23%, Germany’s as 19%, and the Netherlands
+          as 21%. Some Nordic countries are known for higher standard rates around 25%. Always confirm the applicable rate for the product type and location—especially
+          for cross-border sales—because special rules and exemptions may apply.
+        </p>
+
+        <h2 class="mt-8 font-heading text-xl text-text">Frequently Asked Questions</h2>
+
+        <h3 class="mt-5 font-heading text-lg text-text">1. What is the standard VAT rate in the UK?</h3>
+        <p class="mt-2 text-base leading-relaxed text-muted">
+          The standard VAT rate in the UK is commonly 20%, although certain categories may be reduced-rated (for example 5%) or zero-rated.
+        </p>
+
+        <h3 class="mt-5 font-heading text-lg text-text">2. How do I add 20% VAT to a price?</h3>
+        <p class="mt-2 text-base leading-relaxed text-muted">
+          Multiply the net price by 0.20 to get the VAT amount, then add it to the net price. Alternatively, multiply the net price by 1.20 to get the gross amount.
+        </p>
+
+        <h3 class="mt-5 font-heading text-lg text-text">3. How do I remove VAT from a price?</h3>
+        <p class="mt-2 text-base leading-relaxed text-muted">
+          Divide the gross price by (1 + VAT rate). For 20% VAT, divide by 1.20 to get the net price, then subtract net from gross to get the VAT amount.
+        </p>
+
+        <h3 class="mt-5 font-heading text-lg text-text">4. Which items are VAT exempt in the UK?</h3>
+        <p class="mt-2 text-base leading-relaxed text-muted">
+          Some goods and services may be exempt or zero-rated depending on UK rules (for example certain financial services or essentials). The exact classification
+          can be complex, so it’s best to check current guidance or consult a professional for edge cases.
+        </p>
+      </article>
+    </section>
+  </div>
+
+  <script is:inline>
+    const form = document.getElementById('vat-form');
+    const amountEl = document.getElementById('amount');
+    const ratePresetEl = document.getElementById('ratePreset');
+    const customWrapEl = document.getElementById('customWrap');
+    const customRateEl = document.getElementById('customRate');
+    const errorEl = document.getElementById('error');
+
+    const outNet = document.getElementById('net');
+    const outVat = document.getElementById('vat');
+    const outGross = document.getElementById('gross');
+    const outRateApplied = document.getElementById('rateApplied');
+    const outRateBox = document.getElementById('rateBox');
+
+    function parseNumber(value) {
+      if (!value) return null;
+      const cleaned = String(value).replace(/[^0-9.\-]/g, '');
+      const n = Number(cleaned);
+      return Number.isFinite(n) ? n : null;
+    }
+
+    function fmt(n) {
+      if (n === null) return '—';
+      return new Intl.NumberFormat(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }).format(n);
+    }
+
+    function setError(message) {
+      if (!message) {
+        errorEl.classList.add('hidden');
+        errorEl.textContent = '';
+        return;
+      }
+      errorEl.classList.remove('hidden');
+      errorEl.textContent = message;
+    }
+
+    function renderEmpty() {
+      outNet.textContent = '—';
+      outVat.textContent = '—';
+      outGross.textContent = '—';
+      outRateApplied.textContent = 'Rate: —';
+      outRateBox.textContent = '—';
+    }
+
+    function getRate() {
+      const preset = ratePresetEl.value;
+      if (preset === 'custom') {
+        const custom = parseNumber(customRateEl.value);
+        return custom;
+      }
+      return Number(preset);
+    }
+
+    function updateCustomVisibility() {
+      const show = ratePresetEl.value === 'custom';
+      customWrapEl.classList.toggle('hidden', !show);
+      if (!show) {
+        customRateEl.value = '';
+      }
+    }
+
+    function getMode() {
+      const el = form.querySelector('input[name="mode"]:checked');
+      return el ? el.value : 'add';
+    }
+
+    function calculate() {
+      setError('');
+
+      const amount = parseNumber(amountEl.value);
+      const rate = getRate();
+      const mode = getMode();
+
+      if (amount === null || rate === null) {
+        renderEmpty();
+        return;
+      }
+
+      if (amount < 0) {
+        setError('Amount cannot be negative.');
+        renderEmpty();
+        return;
+      }
+
+      if (rate < 0) {
+        setError('VAT rate cannot be negative.');
+        renderEmpty();
+        return;
+      }
+
+      const multiplier = 1 + rate / 100;
+      let net = null;
+      let vat = null;
+      let gross = null;
+
+      if (mode === 'remove') {
+        gross = amount;
+        net = multiplier === 0 ? 0 : gross / multiplier;
+        vat = gross - net;
+      } else {
+        net = amount;
+        vat = net * (rate / 100);
+        gross = net + vat;
+      }
+
+      outNet.textContent = fmt(net);
+      outVat.textContent = fmt(vat);
+      outGross.textContent = fmt(gross);
+      outRateApplied.textContent = 'Rate: ' + rate + '%';
+      outRateBox.textContent = rate + '%';
+    }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      calculate();
+    });
+
+    amountEl.addEventListener('input', calculate);
+    ratePresetEl.addEventListener('change', () => {
+      updateCustomVisibility();
+      calculate();
+    });
+    customRateEl.addEventListener('input', calculate);
+    form.querySelectorAll('input[name="mode"]').forEach((el) => {
+      el.addEventListener('change', calculate);
+    });
+
+    updateCustomVisibility();
+    renderEmpty();
+  </script>
+</BaseLayout>

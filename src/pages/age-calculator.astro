@@ -1,0 +1,344 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import ToolCard from "../components/ToolCard.astro";
+
+const related = [
+  {
+    icon: "🧾",
+    href: "/vat-calculator",
+    title: "VAT Calculator",
+    description: "Add or remove VAT from any price instantly",
+  },
+  {
+    icon: "🏠",
+    href: "/mortgage-calculator",
+    title: "Mortgage Calculator",
+    description: "Calculate monthly payments and total cost",
+  },
+  {
+    icon: "％",
+    href: "/percentage-calculator",
+    title: "Percentage Calculator",
+    description: "Three ways to calculate any percentage",
+  },
+];
+---
+<BaseLayout
+  title="Age Calculator — Find Your Exact Age in Years, Months and Days | CalcHub"
+  description="Free age calculator. Enter your date of birth and instantly find your exact age in years, months, days, weeks and hours. No sign-up needed."
+>
+  <div class="mx-auto w-full max-w-4xl">
+    <nav class="text-sm text-muted" aria-label="Breadcrumb">
+      <a class="hover:text-text" href="/">Home</a>
+      <span class="px-2" aria-hidden="true">›</span>
+      <span class="text-text">Age Calculator</span>
+    </nav>
+
+    <div class="mt-6">
+      <p class="text-sm font-medium text-muted">Calculator</p>
+      <h1 class="mt-3 font-heading text-3xl tracking-tight sm:text-4xl">Age Calculator</h1>
+      <p class="mt-4 text-base leading-relaxed text-muted">
+        Enter your date of birth and an “as of” date to calculate your exact age.
+      </p>
+    </div>
+
+    <section class="mt-8 rounded-xl border border-border bg-card p-6 shadow-soft sm:p-8" aria-label="Age calculator">
+      <form id="age-form" class="grid grid-cols-1 gap-4 sm:grid-cols-2" autocomplete="off">
+        <div>
+          <label class="block text-sm font-medium text-text" for="dob">Date of Birth</label>
+          <input
+            id="dob"
+            name="dob"
+            type="date"
+            class="mt-2 w-full rounded-lg border border-border bg-white px-3 py-2 text-text shadow-sm focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
+            required
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-text" for="asof">Calculate age as of</label>
+          <input
+            id="asof"
+            name="asof"
+            type="date"
+            class="mt-2 w-full rounded-lg border border-border bg-white px-3 py-2 text-text shadow-sm focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
+            required
+          />
+        </div>
+
+        <div class="sm:col-span-2">
+          <button
+            type="submit"
+            class="inline-flex w-full items-center justify-center rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white shadow-sm hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-accent/30 sm:w-auto"
+          >
+            Calculate Age
+          </button>
+          <p id="error" class="mt-3 hidden text-sm font-medium text-accent"></p>
+        </div>
+      </form>
+
+      <div class="mt-8 rounded-xl border border-border bg-bg p-5" aria-label="Main result">
+        <div class="text-xs font-semibold uppercase tracking-wide text-muted">Exact age</div>
+        <div id="main" class="mt-2 font-heading text-3xl text-text sm:text-4xl">—</div>
+        <div id="meta" class="mt-2 text-sm text-muted">Enter your dates to see the full breakdown.</div>
+      </div>
+
+      <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3" aria-label="Age breakdown">
+        <div class="rounded-xl border border-border bg-card p-5">
+          <div class="text-xs font-medium uppercase tracking-wide text-muted">Total months lived</div>
+          <div id="months" class="mt-2 font-heading text-2xl text-text">—</div>
+        </div>
+        <div class="rounded-xl border border-border bg-card p-5">
+          <div class="text-xs font-medium uppercase tracking-wide text-muted">Total weeks lived</div>
+          <div id="weeks" class="mt-2 font-heading text-2xl text-text">—</div>
+        </div>
+        <div class="rounded-xl border border-border bg-card p-5">
+          <div class="text-xs font-medium uppercase tracking-wide text-muted">Total days lived</div>
+          <div id="days" class="mt-2 font-heading text-2xl text-text">—</div>
+        </div>
+        <div class="rounded-xl border border-border bg-card p-5">
+          <div class="text-xs font-medium uppercase tracking-wide text-muted">Days until next birthday</div>
+          <div id="next" class="mt-2 font-heading text-2xl text-text">—</div>
+        </div>
+        <div class="rounded-xl border border-border bg-card p-5">
+          <div class="text-xs font-medium uppercase tracking-wide text-muted">Born on</div>
+          <div id="weekday" class="mt-2 font-heading text-2xl text-text">—</div>
+        </div>
+        <div class="rounded-xl border border-border bg-card p-5">
+          <div class="text-xs font-medium uppercase tracking-wide text-muted">Total hours lived</div>
+          <div id="hours" class="mt-2 font-heading text-2xl text-text">—</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mt-12" aria-label="Age calculator guide">
+      <article class="prose max-w-none">
+        <h1 class="font-heading text-2xl text-text">Age Calculator</h1>
+        <p class="mt-4 text-base leading-relaxed text-muted">
+          An age calculator helps you turn two dates into a clear, human-friendly answer: how long you’ve been alive.
+          While “age” is often talked about in years, the most accurate way to describe it is a combination of years,
+          months, and days between your date of birth and a chosen “as of” date. This is useful for many everyday
+          scenarios, such as filling out forms, planning birthdays, checking eligibility rules, or simply satisfying
+          curiosity. With CalcHub’s free age calculator, you can also see totals like months, weeks, days, and hours
+          lived, plus the day of the week you were born.
+        </p>
+
+        <h2 class="mt-8 font-heading text-xl text-text">How Does an Age Calculator Work?</h2>
+        <p class="mt-3 text-base leading-relaxed text-muted">
+          At a high level, the calculator compares your date of birth to an “as of” date and measures the time between
+          them. The tricky part is that months and years are not a fixed number of days, and leap years add extra days.
+          A good age calculator accounts for varying month lengths (28 to 31 days) and handles edge cases like birthdays
+          on February 29. The result shown as “X years, Y months, Z days” is computed by advancing from the birth date in
+          calendar units, not by dividing total days by a constant. From that same interval, the tool can also derive total
+          days and weeks, estimate total hours, and calculate the next birthday by building the next occurrence of your birth
+          month and day after the “as of” date.
+        </p>
+
+        <h2 class="mt-8 font-heading text-xl text-text">How to Calculate Your Age Manually</h2>
+        <p class="mt-3 text-base leading-relaxed text-muted">
+          To calculate your age manually, start with the year difference between the “as of” date and your date of birth.
+          Then check whether your birthday has already happened in the “as of” year. If it hasn’t, subtract one year.
+          Next, determine the month difference. If the day of the month hasn’t been reached yet, reduce the month count and
+          borrow the appropriate number of days from the previous month. Finally, the remaining days give you the exact
+          “years, months, and days” breakdown. For totals, you can count the number of days between the two dates and then
+          convert: weeks are days divided by 7, and hours are days multiplied by 24. Manual methods work, but they’re easy to
+          get wrong when months have different lengths or when a leap day is involved.
+        </p>
+
+        <h2 class="mt-8 font-heading text-xl text-text">Frequently Asked Questions</h2>
+
+        <h3 class="mt-5 font-heading text-lg text-text">1. How do I calculate my exact age?</h3>
+        <p class="mt-2 text-base leading-relaxed text-muted">
+          Use your date of birth and a specific “as of” date (usually today). An exact calculation reports calendar years,
+          months, and days, and not just a rough estimate based on total days.
+        </p>
+
+        <h3 class="mt-5 font-heading text-lg text-text">2. How many days old am I?</h3>
+        <p class="mt-2 text-base leading-relaxed text-muted">
+          Count the total number of days between your birth date and the “as of” date. This includes leap days automatically
+          if you use a date-based method (like this calculator) rather than a fixed-days-per-year shortcut.
+        </p>
+
+        <h3 class="mt-5 font-heading text-lg text-text">3. What day of the week was I born?</h3>
+        <p class="mt-2 text-base leading-relaxed text-muted">
+          The weekday is determined by your date of birth on the calendar (for example, Monday or Friday). The calculator uses
+          the birth date to look up the weekday and displays it instantly.
+        </p>
+
+        <h3 class="mt-5 font-heading text-lg text-text">4. How many days until my next birthday?</h3>
+        <p class="mt-2 text-base leading-relaxed text-muted">
+          Find the next occurrence of your birth month and day after the “as of” date, then count the days between. If your
+          birthday is today, the result is 0.
+        </p>
+      </article>
+    </section>
+
+    <section class="mt-12" aria-label="Related calculators">
+      <div class="flex items-end justify-between gap-4">
+        <h2 class="font-heading text-xl sm:text-2xl">Related calculators</h2>
+      </div>
+      <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {related.map((tool) => (
+          <ToolCard {...tool} />
+        ))}
+      </div>
+    </section>
+  </div>
+
+  <script is:inline>
+    const form = document.getElementById('age-form');
+    const dobEl = document.getElementById('dob');
+    const asOfEl = document.getElementById('asof');
+    const errorEl = document.getElementById('error');
+
+    const outMain = document.getElementById('main');
+    const outMeta = document.getElementById('meta');
+    const outMonths = document.getElementById('months');
+    const outWeeks = document.getElementById('weeks');
+    const outDays = document.getElementById('days');
+    const outHours = document.getElementById('hours');
+    const outNext = document.getElementById('next');
+    const outWeekday = document.getElementById('weekday');
+
+    function pad2(n) {
+      return String(n).padStart(2, '0');
+    }
+
+    function toISODateLocal(d) {
+      return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate());
+    }
+
+    function parseLocalDate(value) {
+      if (!value) return null;
+      const m = value.match(/^([0-9]{4})-([0-9]{2})-([0-9]{2})$/);
+      if (!m) return null;
+      const y = Number(m[1]);
+      const mo = Number(m[2]) - 1;
+      const da = Number(m[3]);
+      const d = new Date(y, mo, da);
+      if (d.getFullYear() !== y || d.getMonth() !== mo || d.getDate() !== da) return null;
+      d.setHours(12, 0, 0, 0);
+      return d;
+    }
+
+    function diffYMD(fromDate, toDate) {
+      let years = toDate.getFullYear() - fromDate.getFullYear();
+      let months = toDate.getMonth() - fromDate.getMonth();
+      let days = toDate.getDate() - fromDate.getDate();
+
+      if (days < 0) {
+        const prevMonth = new Date(toDate.getFullYear(), toDate.getMonth(), 0);
+        days += prevMonth.getDate();
+        months -= 1;
+      }
+
+      if (months < 0) {
+        months += 12;
+        years -= 1;
+      }
+
+      return { years, months, days };
+    }
+
+    function daysBetween(start, end) {
+      const ms = end.getTime() - start.getTime();
+      return Math.floor(ms / 86400000);
+    }
+
+    function nextBirthdayDays(dob, asOf) {
+      let y = asOf.getFullYear();
+      let next = new Date(y, dob.getMonth(), dob.getDate());
+      next.setHours(12, 0, 0, 0);
+
+      if (next.getMonth() !== dob.getMonth() || next.getDate() !== dob.getDate()) {
+        next = new Date(y, dob.getMonth() + 1, 0);
+        next.setHours(12, 0, 0, 0);
+      }
+
+      if (next.getTime() < asOf.getTime()) {
+        y += 1;
+        next = new Date(y, dob.getMonth(), dob.getDate());
+        next.setHours(12, 0, 0, 0);
+        if (next.getMonth() !== dob.getMonth() || next.getDate() !== dob.getDate()) {
+          next = new Date(y, dob.getMonth() + 1, 0);
+          next.setHours(12, 0, 0, 0);
+        }
+      }
+
+      return daysBetween(asOf, next);
+    }
+
+    function formatInt(n) {
+      return new Intl.NumberFormat(undefined).format(n);
+    }
+
+    function setError(message) {
+      if (!message) {
+        errorEl.classList.add('hidden');
+        errorEl.textContent = '';
+        return;
+      }
+      errorEl.classList.remove('hidden');
+      errorEl.textContent = message;
+    }
+
+    function renderEmpty() {
+      outMain.textContent = '—';
+      outMeta.textContent = 'Enter your dates to see the full breakdown.';
+      outMonths.textContent = '—';
+      outWeeks.textContent = '—';
+      outDays.textContent = '—';
+      outHours.textContent = '—';
+      outNext.textContent = '—';
+      outWeekday.textContent = '—';
+    }
+
+    function calculate() {
+      setError('');
+      const dob = parseLocalDate(dobEl.value);
+      const asOf = parseLocalDate(asOfEl.value);
+
+      if (!dob || !asOf) {
+        renderEmpty();
+        return;
+      }
+
+      if (asOf.getTime() < dob.getTime()) {
+        setError('“As of” date must be on or after your date of birth.');
+        renderEmpty();
+        return;
+      }
+
+      const ymd = diffYMD(dob, asOf);
+      const totalDays = daysBetween(dob, asOf);
+      const totalWeeks = totalDays / 7;
+      const totalMonths = (asOf.getFullYear() - dob.getFullYear()) * 12 + (asOf.getMonth() - dob.getMonth());
+      const hours = totalDays * 24;
+      const daysToNext = nextBirthdayDays(dob, asOf);
+
+      const weekday = new Intl.DateTimeFormat(undefined, { weekday: 'long' }).format(dob);
+      outMain.textContent = formatInt(ymd.years) + ' years, ' + formatInt(ymd.months) + ' months, ' + formatInt(ymd.days) + ' days';
+      outMeta.textContent = 'From ' + dobEl.value + ' to ' + asOfEl.value;
+      outMonths.textContent = formatInt(totalMonths);
+      outWeeks.textContent = new Intl.NumberFormat(undefined, { maximumFractionDigits: 2 }).format(totalWeeks);
+      outDays.textContent = formatInt(totalDays);
+      outHours.textContent = formatInt(hours);
+      outNext.textContent = formatInt(daysToNext);
+      outWeekday.textContent = weekday;
+    }
+
+    const today = new Date();
+    today.setHours(12, 0, 0, 0);
+    asOfEl.value = toISODateLocal(today);
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      calculate();
+    });
+
+    dobEl.addEventListener('input', calculate);
+    asOfEl.addEventListener('input', calculate);
+
+    renderEmpty();
+  </script>
+</BaseLayout>

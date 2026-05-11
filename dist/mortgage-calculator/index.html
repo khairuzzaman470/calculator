@@ -1,0 +1,268 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Syne:wght@600;700&display=swap" rel="stylesheet"><title>Mortgage Calculator — Monthly Payment and Total Cost | CalcHub</title><meta name="description" content="Free mortgage calculator. Calculate monthly repayments, total interest and full loan cost instantly. No sign-up needed."><link rel="canonical" href="https://card.khairuzzaman.site/mortgage-calculator/"><meta property="og:type" content="website"><meta property="og:title" content="Mortgage Calculator — Monthly Payment and Total Cost | CalcHub"><meta property="og:description" content="Free mortgage calculator. Calculate monthly repayments, total interest and full loan cost instantly. No sign-up needed."><meta property="og:url" content="https://card.khairuzzaman.site/mortgage-calculator/"><meta name="twitter:card" content="summary_large_image"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><!-- Google Analytics (placeholder) --><!--
+      Paste GA code here.
+    --><link rel="stylesheet" href="/_astro/about.C1oZmLp9.css"></head> <body class="min-h-dvh bg-bg text-text"> <header class="bg-navy text-white"> <div class="container-page"> <div class="flex items-center justify-between py-4"> <a href="/" class="flex items-center gap-2"> <span class="font-heading text-lg tracking-tight">CalcHub</span> <span class="rounded-full bg-white/10 px-2 py-0.5 text-xs text-white/80">Utilities</span> </a> <nav class="hidden sm:flex items-center gap-6 text-sm text-white/80"> <a class="hover:text-white" href="/">Home</a> <a class="hover:text-white" href="/vat-calculator">VAT</a> <a class="hover:text-white" href="/age-calculator">Age</a> <a class="hover:text-white" href="/mortgage-calculator">Mortgage</a> </nav> </div> </div> </header> <main class="container-page py-10">  <div class="mx-auto w-full max-w-4xl"> <nav class="text-sm text-muted" aria-label="Breadcrumb"> <a class="hover:text-text" href="/">Home</a> <span class="px-2" aria-hidden="true">›</span> <span class="text-text">Mortgage Calculator</span> </nav> <div class="mt-6"> <p class="text-sm font-medium text-muted">Calculator</p> <h1 class="mt-3 font-heading text-3xl tracking-tight sm:text-4xl">Mortgage Calculator</h1> <p class="mt-4 text-base leading-relaxed text-muted">
+Calculate monthly repayments, total interest, and the full cost of your loan. (Taxes and insurance not included.)
+</p> </div> <section class="mt-8 rounded-xl border border-border bg-card p-6 shadow-soft sm:p-8" aria-label="Mortgage calculator"> <form id="mortgage-form" class="grid grid-cols-1 gap-4 sm:grid-cols-2" autocomplete="off"> <div> <label class="block text-sm font-medium text-text" for="price">Home price ($)</label> <input id="price" name="price" inputmode="decimal" placeholder="e.g. 500000" class="mt-2 w-full rounded-lg border border-border bg-white px-3 py-2 text-text shadow-sm focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20" required> </div> <div> <div class="flex items-end justify-between gap-3"> <label class="block text-sm font-medium text-text" for="down">Down payment ($)</label> <div id="downPct" class="text-xs font-semibold text-muted">—</div> </div> <input id="down" name="down" inputmode="decimal" placeholder="e.g. 100000" class="mt-2 w-full rounded-lg border border-border bg-white px-3 py-2 text-text shadow-sm focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20" required> </div> <div> <label class="block text-sm font-medium text-text" for="term">Loan term</label> <select id="term" name="term" class="mt-2 w-full rounded-lg border border-border bg-white px-3 py-2 text-text shadow-sm focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"> <option value="10">10 years</option> <option value="15">15 years</option> <option value="20">20 years</option> <option value="25">25 years</option> <option value="30" selected>30 years</option> </select> </div> <div> <label class="block text-sm font-medium text-text" for="rate">Annual interest rate (%)</label> <input id="rate" name="rate" inputmode="decimal" placeholder="e.g. 6.5" class="mt-2 w-full rounded-lg border border-border bg-white px-3 py-2 text-text shadow-sm focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20" required> </div> <div> <label class="block text-sm font-medium text-text" for="start">Start date (month & year)</label> <input id="start" name="start" type="month" class="mt-2 w-full rounded-lg border border-border bg-white px-3 py-2 text-text shadow-sm focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20" required> </div> <div class="sm:col-span-2"> <button type="submit" class="inline-flex w-full items-center justify-center rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white shadow-sm hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-accent/30 sm:w-auto">
+Calculate Mortgage
+</button> <p id="error" class="mt-3 hidden text-sm font-medium text-accent"></p> </div> </form> <div class="mt-8 rounded-xl border border-border bg-bg p-5" aria-label="Monthly payment"> <div class="text-xs font-semibold uppercase tracking-wide text-muted">Monthly payment</div> <div id="monthly" class="mt-2 font-heading text-3xl text-text sm:text-4xl">—</div> <div id="monthlyNote" class="mt-2 text-sm text-muted">Principal + interest (estimated)</div> </div> <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4" aria-label="Mortgage totals"> <div class="rounded-xl border border-border bg-card p-5"> <div class="text-xs font-medium uppercase tracking-wide text-muted">Total loan amount</div> <div id="loan" class="mt-2 font-heading text-2xl text-text">—</div> </div> <div class="rounded-xl border border-border bg-card p-5"> <div class="text-xs font-medium uppercase tracking-wide text-muted">Total interest paid</div> <div id="interest" class="mt-2 font-heading text-2xl text-text">—</div> </div> <div class="rounded-xl border border-border bg-card p-5"> <div class="text-xs font-medium uppercase tracking-wide text-muted">Total cost of loan</div> <div id="total" class="mt-2 font-heading text-2xl text-text">—</div> </div> <div class="rounded-xl border border-border bg-card p-5"> <div class="text-xs font-medium uppercase tracking-wide text-muted">Estimated payoff date</div> <div id="payoff" class="mt-2 font-heading text-2xl text-text">—</div> </div> </div> <div class="mt-6 overflow-hidden rounded-xl border border-border" aria-label="Amortization summary"> <div class="bg-card px-5 py-4"> <h2 class="font-heading text-lg text-text">Amortization summary</h2> <p class="mt-1 text-sm text-muted">A simple snapshot of how your balance changes over time.</p> </div> <div class="overflow-x-auto bg-white"> <table class="min-w-full border-collapse"> <thead> <tr class="border-t border-border bg-bg"> <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted">Period</th> <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted">Remaining balance</th> <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted">Total interest paid</th> </tr> </thead> <tbody id="amortBody"> <tr class="border-t border-border"> <td class="px-5 py-4 text-sm text-muted">Year 1</td> <td class="px-5 py-4 text-sm text-text">—</td> <td class="px-5 py-4 text-sm text-text">—</td> </tr> <tr class="border-t border-border"> <td class="px-5 py-4 text-sm text-muted">Year 5</td> <td class="px-5 py-4 text-sm text-text">—</td> <td class="px-5 py-4 text-sm text-text">—</td> </tr> <tr class="border-t border-border"> <td class="px-5 py-4 text-sm text-muted">Year 10</td> <td class="px-5 py-4 text-sm text-text">—</td> <td class="px-5 py-4 text-sm text-text">—</td> </tr> <tr class="border-t border-border"> <td class="px-5 py-4 text-sm text-muted">Final Year</td> <td class="px-5 py-4 text-sm text-text">—</td> <td class="px-5 py-4 text-sm text-text">—</td> </tr> </tbody> </table> </div> </div> </section> <section class="mt-12" aria-label="Mortgage calculator guide"> <article class="prose max-w-none"> <h1 class="font-heading text-2xl text-text">Mortgage Calculator</h1> <p class="mt-4 text-base leading-relaxed text-muted">
+A mortgage is usually the biggest loan most people ever take, so it helps to understand exactly what you’re signing up for.
+          A mortgage calculator estimates your monthly payment, the total interest you’ll pay over time, and the overall cost of the loan.
+          This page focuses on a simple, common scenario: a fixed-rate mortgage with regular monthly payments and no extra principal payments.
+          While real-world costs can include property taxes, home insurance, and mortgage insurance, the principal-and-interest payment is the
+          core of every amortized loan. With the inputs below, you can quickly test different home prices, down payments, rates, and terms to see
+          how your monthly budget and long-term totals change.
+</p> <h2 class="mt-8 font-heading text-xl text-text">How to Calculate Mortgage Payments</h2> <p class="mt-3 text-base leading-relaxed text-muted">
+Mortgage payments are calculated with a standard amortization formula. First, determine your loan amount: home price minus down payment.
+          Then convert the annual interest rate to a monthly rate by dividing by 12 (and by 100 to convert percent to a decimal). Finally, use the
+          number of payments (loan term in years times 12). The formula produces a fixed monthly payment that covers interest and principal. Early in
+          the loan, a larger share of your payment goes to interest because the balance is high. Over time, as the balance decreases, the interest portion
+          shrinks and more of each payment goes toward the principal. That’s why two mortgages with the same loan amount but different terms can have
+          very different total interest, even if the monthly payment looks manageable.
+</p> <h2 class="mt-8 font-heading text-xl text-text">What Affects Your Monthly Payment?</h2> <p class="mt-3 text-base leading-relaxed text-muted">
+Your monthly payment is most sensitive to three factors: the loan amount, the interest rate, and the loan term. A larger down payment reduces
+          the loan amount and can meaningfully lower your payment and total interest. The interest rate has a compounding effect, so even a small change—
+          like 0.5%—can shift your payment by a noticeable amount. The term changes how quickly you pay down principal: a 30-year loan spreads the balance
+          over more months, lowering the monthly payment but increasing total interest; a 15-year loan raises the monthly payment but can save a substantial
+          amount of interest overall. Finally, your start date affects the estimated payoff date shown in the results, since it’s based on the month you begin.
+</p> <h2 class="mt-8 font-heading text-xl text-text">Fixed Rate vs Variable Rate Mortgages</h2> <p class="mt-3 text-base leading-relaxed text-muted">
+A fixed-rate mortgage keeps the same interest rate for the entire loan term, so the principal-and-interest payment stays stable. This predictability is
+          valuable for long-term budgeting. A variable-rate (or adjustable-rate) mortgage can change after an initial fixed period, which means your payment can
+          increase or decrease depending on market rates. Adjustable loans may start with a lower rate, but they introduce uncertainty. If you’re comparing options,
+          it’s helpful to run multiple scenarios—one at today’s rate, and another at a higher “stress test” rate—to understand the risk to your monthly budget.
+</p> <h2 class="mt-8 font-heading text-xl text-text">Frequently Asked Questions</h2> <h3 class="mt-5 font-heading text-lg text-text">1. How much mortgage can I afford?</h3> <p class="mt-2 text-base leading-relaxed text-muted">
+A common approach is to start with a monthly payment you’re comfortable with and work backward. Lenders often look at your income, debts, and other
+          monthly obligations to estimate affordability. Use the calculator to test payments at different prices and rates, and leave room for taxes, insurance,
+          maintenance, and unexpected expenses.
+</p> <h3 class="mt-5 font-heading text-lg text-text">2. What is a good interest rate for a mortgage?</h3> <p class="mt-2 text-base leading-relaxed text-muted">
+“Good” depends on the market, your credit profile, and the loan type. Instead of focusing on a single number, compare multiple quotes and evaluate how
+          rate changes affect your payment and total interest. Even small rate differences can add up over decades.
+</p> <h3 class="mt-5 font-heading text-lg text-text">3. Is it better to put more money down?</h3> <p class="mt-2 text-base leading-relaxed text-muted">
+A larger down payment reduces the loan amount, which usually lowers the monthly payment and total interest. It may also help you avoid additional costs
+          like mortgage insurance in some situations. However, you should also keep an emergency fund and consider other financial goals.
+</p> <h3 class="mt-5 font-heading text-lg text-text">4. What is the difference between principal and interest?</h3> <p class="mt-2 text-base leading-relaxed text-muted">
+Principal is the amount you borrowed (the remaining balance). Interest is the cost of borrowing that principal. Each payment includes both: interest is
+          calculated on the current balance, and the rest of the payment reduces the principal. Over time, interest decreases as the balance is paid down.
+</p> </article> </section> </div> <script>
+    const form = document.getElementById('mortgage-form');
+    const priceEl = document.getElementById('price');
+    const downEl = document.getElementById('down');
+    const termEl = document.getElementById('term');
+    const rateEl = document.getElementById('rate');
+    const startEl = document.getElementById('start');
+    const downPctEl = document.getElementById('downPct');
+    const errorEl = document.getElementById('error');
+
+    const outMonthly = document.getElementById('monthly');
+    const outLoan = document.getElementById('loan');
+    const outInterest = document.getElementById('interest');
+    const outTotal = document.getElementById('total');
+    const outPayoff = document.getElementById('payoff');
+    const amortBody = document.getElementById('amortBody');
+
+    function parseNumber(value) {
+      if (!value) return null;
+      const cleaned = String(value).replace(/[^0-9.\-]/g, '');
+      const n = Number(cleaned);
+      return Number.isFinite(n) ? n : null;
+    }
+
+    function moneyUSD(n) {
+      if (n === null) return '—';
+      return new Intl.NumberFormat(undefined, {
+        style: 'currency',
+        currency: 'USD',
+        maximumFractionDigits: 2,
+      }).format(n);
+    }
+
+    function setError(message) {
+      if (!message) {
+        errorEl.classList.add('hidden');
+        errorEl.textContent = '';
+        return;
+      }
+      errorEl.classList.remove('hidden');
+      errorEl.textContent = message;
+    }
+
+    function renderEmpty() {
+      outMonthly.textContent = '—';
+      outLoan.textContent = '—';
+      outInterest.textContent = '—';
+      outTotal.textContent = '—';
+      outPayoff.textContent = '—';
+
+      const rows = amortBody.querySelectorAll('tr');
+      rows.forEach((row) => {
+        const cells = row.querySelectorAll('td');
+        if (cells.length >= 3) {
+          cells[1].textContent = '—';
+          cells[2].textContent = '—';
+        }
+      });
+    }
+
+    function updateDownPaymentPercent() {
+      const price = parseNumber(priceEl.value);
+      const down = parseNumber(downEl.value);
+      if (price === null || price <= 0 || down === null || down < 0) {
+        downPctEl.textContent = '—';
+        return;
+      }
+      const pct = (down / price) * 100;
+      if (!Number.isFinite(pct)) {
+        downPctEl.textContent = '—';
+        return;
+      }
+      downPctEl.textContent = pct.toFixed(1) + '%';
+    }
+
+    function computeMonthlyPayment(P, annualRate, years) {
+      const n = years * 12;
+      const r = annualRate / 100 / 12;
+      if (r === 0) return P / n;
+      return (P * r) / (1 - Math.pow(1 + r, -n));
+    }
+
+    function addMonthsToYearMonth(year, monthIndex, monthsToAdd) {
+      const total = year * 12 + monthIndex + monthsToAdd;
+      const y = Math.floor(total / 12);
+      const m = total % 12;
+      return { year: y, monthIndex: m };
+    }
+
+    function formatMonthYear(year, monthIndex) {
+      const d = new Date(year, monthIndex, 1);
+      return new Intl.DateTimeFormat(undefined, { month: 'long', year: 'numeric' }).format(d);
+    }
+
+    function amortizationSnapshot(P, annualRate, years, snapshotMonths) {
+      const n = years * 12;
+      const r = annualRate / 100 / 12;
+      const payment = computeMonthlyPayment(P, annualRate, years);
+      let balance = P;
+      let totalInterestPaid = 0;
+
+      const maxMonths = Math.min(snapshotMonths, n);
+      for (let i = 0; i < maxMonths; i += 1) {
+        const interest = balance * r;
+        const principalPaid = payment - interest;
+        totalInterestPaid += interest;
+        balance = balance - principalPaid;
+        if (balance < 0) balance = 0;
+      }
+
+      return { balance, totalInterestPaid };
+    }
+
+    function calculate() {
+      setError('');
+
+      const price = parseNumber(priceEl.value);
+      const down = parseNumber(downEl.value);
+      const termYears = Number(termEl.value);
+      const annualRate = parseNumber(rateEl.value);
+      const startVal = startEl.value;
+
+      updateDownPaymentPercent();
+
+      if (price === null || down === null || annualRate === null || !startVal) {
+        renderEmpty();
+        return;
+      }
+
+      if (price <= 0) {
+        setError('Home price must be greater than 0.');
+        renderEmpty();
+        return;
+      }
+
+      if (down < 0) {
+        setError('Down payment cannot be negative.');
+        renderEmpty();
+        return;
+      }
+
+      if (down > price) {
+        setError('Down payment cannot be greater than the home price.');
+        renderEmpty();
+        return;
+      }
+
+      if (annualRate < 0) {
+        setError('Interest rate cannot be negative.');
+        renderEmpty();
+        return;
+      }
+
+      const loanAmount = price - down;
+      const monthlyPayment = computeMonthlyPayment(loanAmount, annualRate, termYears);
+      const n = termYears * 12;
+      const totalPaid = monthlyPayment * n;
+      const totalInterest = totalPaid - loanAmount;
+
+      const m = startVal.match(/^([0-9]{4})-([0-9]{2})$/);
+      if (!m) {
+        setError('Start date must include a month and year.');
+        renderEmpty();
+        return;
+      }
+      const startYear = Number(m[1]);
+      const startMonthIndex = Number(m[2]) - 1;
+      if (!Number.isFinite(startYear) || !Number.isFinite(startMonthIndex) || startMonthIndex < 0 || startMonthIndex > 11) {
+        setError('Start date is invalid.');
+        renderEmpty();
+        return;
+      }
+
+      const payoff = addMonthsToYearMonth(startYear, startMonthIndex, n - 1);
+
+      outMonthly.textContent = moneyUSD(monthlyPayment);
+      outLoan.textContent = moneyUSD(loanAmount);
+      outInterest.textContent = moneyUSD(totalInterest);
+      outTotal.textContent = moneyUSD(totalPaid);
+      outPayoff.textContent = formatMonthYear(payoff.year, payoff.monthIndex);
+
+      const snapshots = [
+        { label: 'Year 1', months: Math.min(12, n) },
+        { label: 'Year 5', months: Math.min(60, n) },
+        { label: 'Year 10', months: Math.min(120, n) },
+        { label: 'Final Year', months: n },
+      ];
+
+      const rows = amortBody.querySelectorAll('tr');
+      snapshots.forEach((snap, idx) => {
+        const row = rows[idx];
+        if (!row) return;
+        const cells = row.querySelectorAll('td');
+        if (cells.length < 3) return;
+        const s = amortizationSnapshot(loanAmount, annualRate, termYears, snap.months);
+        cells[1].textContent = moneyUSD(s.balance);
+        cells[2].textContent = moneyUSD(s.totalInterestPaid);
+      });
+    }
+
+    const now = new Date();
+    const defaultMonth = String(now.getMonth() + 1).padStart(2, '0');
+    startEl.value = now.getFullYear() + '-' + defaultMonth;
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      calculate();
+    });
+
+    priceEl.addEventListener('input', () => {
+      updateDownPaymentPercent();
+      calculate();
+    });
+    downEl.addEventListener('input', () => {
+      updateDownPaymentPercent();
+      calculate();
+    });
+    termEl.addEventListener('change', calculate);
+    rateEl.addEventListener('input', calculate);
+    startEl.addEventListener('input', calculate);
+
+    updateDownPaymentPercent();
+    renderEmpty();
+  </script>  </main> <footer class="border-t border-border bg-bg"> <div class="container-page"> <div class="grid grid-cols-1 gap-8 py-10 sm:grid-cols-3"> <div> <a href="/" class="inline-flex items-center gap-2"> <span class="font-heading text-lg tracking-tight text-text">CalcHub</span> </a> <p class="mt-3 text-sm leading-relaxed text-muted">Free calculators for everyday life</p> </div> <div class="sm:justify-self-center"> <h2 class="text-sm font-semibold text-text">Top calculators</h2> <div class="mt-3 grid grid-cols-1 gap-2 text-sm text-muted"> <a class="hover:text-text" href="/age-calculator">Age Calculator</a> <a class="hover:text-text" href="/mortgage-calculator">Mortgage Calculator</a> <a class="hover:text-text" href="/vat-calculator">VAT Calculator</a> <a class="hover:text-text" href="/tip-calculator">Tip Calculator</a> <a class="hover:text-text" href="/percentage-calculator">Percentage Calculator</a> </div> </div> <div class="sm:justify-self-end"> <h2 class="text-sm font-semibold text-text">Company</h2> <div class="mt-3 flex flex-col gap-2 text-sm text-muted"> <a class="hover:text-text" href="/about">About</a> <a class="hover:text-text" href="/contact">Contact</a> <a class="hover:text-text" href="/privacy-policy">Privacy Policy</a> </div> </div> </div> <div class="border-t border-border py-6"> <p class="text-sm text-muted">2026 CalcHub. All rights reserved.</p> </div> </div> </footer> </body></html>

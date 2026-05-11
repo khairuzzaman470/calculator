@@ -1,0 +1,173 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Syne:wght@600;700&display=swap" rel="stylesheet"><title>Percentage Calculator — 3 Ways to Calculate Any Percentage | CalcHub</title><meta name="description" content="Free percentage calculator. Find what percent of a number is, calculate percentage increase or decrease, and more — instantly."><link rel="canonical" href="https://card.khairuzzaman.site/percentage-calculator/"><meta property="og:type" content="website"><meta property="og:title" content="Percentage Calculator — 3 Ways to Calculate Any Percentage | CalcHub"><meta property="og:description" content="Free percentage calculator. Find what percent of a number is, calculate percentage increase or decrease, and more — instantly."><meta property="og:url" content="https://card.khairuzzaman.site/percentage-calculator/"><meta name="twitter:card" content="summary_large_image"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><!-- Google Analytics (placeholder) --><!--
+      Paste GA code here.
+    --><link rel="stylesheet" href="/_astro/about.C1oZmLp9.css"></head> <body class="min-h-dvh bg-bg text-text"> <header class="bg-navy text-white"> <div class="container-page"> <div class="flex items-center justify-between py-4"> <a href="/" class="flex items-center gap-2"> <span class="font-heading text-lg tracking-tight">CalcHub</span> <span class="rounded-full bg-white/10 px-2 py-0.5 text-xs text-white/80">Utilities</span> </a> <nav class="hidden sm:flex items-center gap-6 text-sm text-white/80"> <a class="hover:text-white" href="/">Home</a> <a class="hover:text-white" href="/vat-calculator">VAT</a> <a class="hover:text-white" href="/age-calculator">Age</a> <a class="hover:text-white" href="/mortgage-calculator">Mortgage</a> </nav> </div> </div> </header> <main class="container-page py-10">  <div class="mx-auto w-full max-w-4xl"> <nav class="text-sm text-muted" aria-label="Breadcrumb"> <a class="hover:text-text" href="/">Home</a> <span class="px-2" aria-hidden="true">›</span> <span class="text-text">Percentage Calculator</span> </nav> <div class="mt-6"> <p class="text-sm font-medium text-muted">Calculator</p> <h1 class="mt-3 font-heading text-3xl tracking-tight sm:text-4xl">Percentage Calculator</h1> <p class="mt-4 text-base leading-relaxed text-muted">
+Three quick ways to solve percentage problems: percent of a number, what percent, and percentage change.
+</p> </div> <section class="mt-8 rounded-xl border border-border bg-card p-6 shadow-soft sm:p-8" aria-label="Percentage calculator"> <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"> <div class="inline-flex rounded-lg border border-border bg-bg p-1" role="tablist" aria-label="Percentage modes"> <button id="tab-1" class="tab rounded-md px-3 py-2 text-sm font-semibold text-text" type="button" data-tab="1" role="tab" aria-selected="true">What is X% of Y?</button> <button id="tab-2" class="tab rounded-md px-3 py-2 text-sm font-semibold text-muted" type="button" data-tab="2" role="tab" aria-selected="false">X is what % of Y?</button> <button id="tab-3" class="tab rounded-md px-3 py-2 text-sm font-semibold text-muted" type="button" data-tab="3" role="tab" aria-selected="false">% Change</button> </div> </div> <div class="mt-6"> <div id="panel-1" class="panel" role="tabpanel" aria-labelledby="tab-1"> <form id="form1" class="grid grid-cols-1 gap-4 sm:grid-cols-3" autocomplete="off"> <div> <label class="block text-sm font-medium text-text" for="p1">Percentage (X)</label> <input id="p1" inputmode="decimal" placeholder="e.g. 20" class="mt-2 w-full rounded-lg border border-border bg-white px-3 py-2 text-text shadow-sm focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20" required> </div> <div> <label class="block text-sm font-medium text-text" for="w1">Whole (Y)</label> <input id="w1" inputmode="decimal" placeholder="e.g. 150" class="mt-2 w-full rounded-lg border border-border bg-white px-3 py-2 text-text shadow-sm focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20" required> </div> <div class="sm:pt-7"> <button type="submit" class="inline-flex w-full items-center justify-center rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white shadow-sm hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-accent/30">Calculate</button> </div> </form> <div class="mt-6 rounded-xl border border-border bg-bg p-5"> <div class="text-xs font-semibold uppercase tracking-wide text-muted">Result</div> <div id="res1" class="mt-2 font-heading text-3xl text-text">—</div> </div> </div> <div id="panel-2" class="panel hidden" role="tabpanel" aria-labelledby="tab-2"> <form id="form2" class="grid grid-cols-1 gap-4 sm:grid-cols-3" autocomplete="off"> <div> <label class="block text-sm font-medium text-text" for="part2">Part (X)</label> <input id="part2" inputmode="decimal" placeholder="e.g. 30" class="mt-2 w-full rounded-lg border border-border bg-white px-3 py-2 text-text shadow-sm focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20" required> </div> <div> <label class="block text-sm font-medium text-text" for="whole2">Whole (Y)</label> <input id="whole2" inputmode="decimal" placeholder="e.g. 200" class="mt-2 w-full rounded-lg border border-border bg-white px-3 py-2 text-text shadow-sm focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20" required> </div> <div class="sm:pt-7"> <button type="submit" class="inline-flex w-full items-center justify-center rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white shadow-sm hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-accent/30">Calculate</button> </div> </form> <div class="mt-6 rounded-xl border border-border bg-bg p-5"> <div class="text-xs font-semibold uppercase tracking-wide text-muted">Result</div> <div id="res2" class="mt-2 font-heading text-3xl text-text">—</div> </div> </div> <div id="panel-3" class="panel hidden" role="tabpanel" aria-labelledby="tab-3"> <form id="form3" class="grid grid-cols-1 gap-4 sm:grid-cols-3" autocomplete="off"> <div> <label class="block text-sm font-medium text-text" for="orig">Original value</label> <input id="orig" inputmode="decimal" placeholder="e.g. 80" class="mt-2 w-full rounded-lg border border-border bg-white px-3 py-2 text-text shadow-sm focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20" required> </div> <div> <label class="block text-sm font-medium text-text" for="newv">New value</label> <input id="newv" inputmode="decimal" placeholder="e.g. 100" class="mt-2 w-full rounded-lg border border-border bg-white px-3 py-2 text-text shadow-sm focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20" required> </div> <div class="sm:pt-7"> <button type="submit" class="inline-flex w-full items-center justify-center rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white shadow-sm hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-accent/30">Calculate</button> </div> </form> <div class="mt-6 rounded-xl border border-border bg-bg p-5"> <div class="text-xs font-semibold uppercase tracking-wide text-muted">Result</div> <div class="mt-2 flex items-center gap-3"> <div id="arrow" class="inline-flex size-10 items-center justify-center rounded-lg bg-white ring-1 ring-border">—</div> <div id="res3" class="font-heading text-3xl text-text">—</div> </div> <div id="res3note" class="mt-2 text-sm text-muted">—</div> </div> </div> <p id="error" class="mt-4 hidden text-sm font-medium text-accent"></p> </div> <div class="mt-10 overflow-hidden rounded-xl border border-border" aria-label="Quick reference"> <div class="bg-card px-5 py-4"> <h2 class="font-heading text-lg text-text">Quick reference table</h2> <p class="mt-1 text-sm text-muted">Common percentages of common amounts.</p> </div> <div class="overflow-x-auto bg-white"> <table class="min-w-full border-collapse"> <thead> <tr class="border-t border-border bg-bg"> <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted">Amount</th> <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted">10%</th> <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted">15%</th> <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted">20%</th> <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted">25%</th> <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted">50%</th> </tr> </thead> <tbody id="refBody"></tbody> </table> </div> </div> </section> <section class="mt-12" aria-label="Percentage calculator guide"> <article class="prose max-w-none"> <h1 class="font-heading text-2xl text-text">Percentage Calculator</h1> <p class="mt-4 text-base leading-relaxed text-muted">
+Percentages show up everywhere: discounts, taxes, growth rates, finance, and everyday comparisons. A percentage is simply a part out of 100. The goal of a
+          percentage calculator is to help you translate between “parts,” “wholes,” and “changes” quickly and accurately. Whether you’re figuring out 20% off a price,
+          calculating how much something increased, or finding what percentage one number is of another, the same core ideas apply.
+</p> <h2 class="mt-8 font-heading text-xl text-text">How to Calculate a Percentage</h2> <p class="mt-3 text-base leading-relaxed text-muted">
+To find X percent of Y, convert the percent to a decimal and multiply: (X ÷ 100) × Y. For example, 15% of 200 is (15 ÷ 100) × 200 = 30. This is the most
+          common percentage calculation and is used for tips, discounts, and VAT-like taxes.
+</p> <h2 class="mt-8 font-heading text-xl text-text">How to Calculate Percentage Increase</h2> <p class="mt-3 text-base leading-relaxed text-muted">
+Percentage increase compares how much a value grew relative to the original. The formula is: ((New − Original) ÷ Original) × 100. If a price goes from 80 to
+          100, the increase is (20 ÷ 80) × 100 = 25%. This helps you compare changes even when the numbers are different sizes.
+</p> <h2 class="mt-8 font-heading text-xl text-text">How to Calculate Percentage Decrease</h2> <p class="mt-3 text-base leading-relaxed text-muted">
+Percentage decrease uses the same structure as increase, but the change is negative: ((New − Original) ÷ Original) × 100. If a value drops from 100 to 80,
+          the result is −20%. Some people prefer to report the magnitude as a positive “20% decrease,” but the sign is helpful when you’re doing calculations.
+</p> <h2 class="mt-8 font-heading text-xl text-text">The Percentage Formula Explained Simply</h2> <p class="mt-3 text-base leading-relaxed text-muted">
+You can think of percentages as a ratio normalized to 100. “X is what percent of Y?” becomes (X ÷ Y) × 100. “What is X% of Y?” becomes (X ÷ 100) × Y.
+          And “percentage change” becomes (difference ÷ original) × 100. Keeping track of which value is the original (the baseline) is the biggest source of mistakes.
+</p> <h2 class="mt-8 font-heading text-xl text-text">Frequently Asked Questions</h2> <h3 class="mt-5 font-heading text-lg text-text">1. How do I calculate 20% of a number?</h3> <p class="mt-2 text-base leading-relaxed text-muted">
+Multiply the number by 0.20. For example, 20% of 150 is 150 × 0.20 = 30.
+</p> <h3 class="mt-5 font-heading text-lg text-text">2. How do I find what percentage one number is of another?</h3> <p class="mt-2 text-base leading-relaxed text-muted">
+Divide the part by the whole and multiply by 100: (part ÷ whole) × 100. For example, 30 is 15% of 200.
+</p> <h3 class="mt-5 font-heading text-lg text-text">3. What is percentage change and how do I calculate it?</h3> <p class="mt-2 text-base leading-relaxed text-muted">
+It’s the change relative to the original value: ((new − original) ÷ original) × 100. A positive result is an increase; a negative result is a decrease.
+</p> <h3 class="mt-5 font-heading text-lg text-text">4. How do I calculate a discount percentage?</h3> <p class="mt-2 text-base leading-relaxed text-muted">
+Discounts are usually “X% off,” meaning you pay (100 − X)% of the original price. For example, 25% off means you pay 75% of the original.
+</p> </article> </section> </div> <script>
+    const errorEl = document.getElementById('error');
+    const tabs = Array.from(document.querySelectorAll('button.tab'));
+    const panels = [
+      document.getElementById('panel-1'),
+      document.getElementById('panel-2'),
+      document.getElementById('panel-3'),
+    ];
+
+    function setError(message) {
+      if (!message) {
+        errorEl.classList.add('hidden');
+        errorEl.textContent = '';
+        return;
+      }
+      errorEl.classList.remove('hidden');
+      errorEl.textContent = message;
+    }
+
+    function parseNumber(value) {
+      if (value === '' || value === null || value === undefined) return null;
+      const cleaned = String(value).replace(/[^0-9.\-]/g, '');
+      const n = Number(cleaned);
+      return Number.isFinite(n) ? n : null;
+    }
+
+    function fmt(n) {
+      if (n === null) return '—';
+      return new Intl.NumberFormat(undefined, { maximumFractionDigits: 6 }).format(n);
+    }
+
+    function selectTab(id) {
+      tabs.forEach((t) => {
+        const active = t.dataset.tab === String(id);
+        t.classList.toggle('text-text', active);
+        t.classList.toggle('text-muted', !active);
+        t.setAttribute('aria-selected', active ? 'true' : 'false');
+      });
+
+      panels.forEach((p, idx) => {
+        p.classList.toggle('hidden', idx !== id - 1);
+      });
+
+      setError('');
+    }
+
+    tabs.forEach((t) => {
+      t.addEventListener('click', () => selectTab(Number(t.dataset.tab)));
+    });
+
+    const p1 = document.getElementById('p1');
+    const w1 = document.getElementById('w1');
+    const res1 = document.getElementById('res1');
+    document.getElementById('form1').addEventListener('submit', (e) => {
+      e.preventDefault();
+      setError('');
+      const pct = parseNumber(p1.value);
+      const whole = parseNumber(w1.value);
+      if (pct === null || whole === null) {
+        res1.textContent = '—';
+        return;
+      }
+      res1.textContent = fmt((pct / 100) * whole);
+    });
+
+    const part2 = document.getElementById('part2');
+    const whole2 = document.getElementById('whole2');
+    const res2 = document.getElementById('res2');
+    document.getElementById('form2').addEventListener('submit', (e) => {
+      e.preventDefault();
+      setError('');
+      const part = parseNumber(part2.value);
+      const whole = parseNumber(whole2.value);
+      if (part === null || whole === null) {
+        res2.textContent = '—';
+        return;
+      }
+      if (whole === 0) {
+        setError('Whole (Y) cannot be 0.');
+        res2.textContent = '—';
+        return;
+      }
+      res2.textContent = fmt((part / whole) * 100) + '%';
+    });
+
+    const orig = document.getElementById('orig');
+    const newv = document.getElementById('newv');
+    const res3 = document.getElementById('res3');
+    const arrow = document.getElementById('arrow');
+    const res3note = document.getElementById('res3note');
+    document.getElementById('form3').addEventListener('submit', (e) => {
+      e.preventDefault();
+      setError('');
+      const o = parseNumber(orig.value);
+      const n = parseNumber(newv.value);
+      if (o === null || n === null) {
+        res3.textContent = '—';
+        arrow.textContent = '—';
+        res3note.textContent = '—';
+        return;
+      }
+      if (o === 0) {
+        setError('Original value cannot be 0.');
+        res3.textContent = '—';
+        arrow.textContent = '—';
+        res3note.textContent = '—';
+        return;
+      }
+      const change = ((n - o) / o) * 100;
+      res3.textContent = fmt(change) + '%';
+
+      if (change > 0) {
+        arrow.textContent = '↑';
+        arrow.style.color = '#22c55e';
+        res3note.textContent = 'Increase';
+      } else if (change < 0) {
+        arrow.textContent = '↓';
+        arrow.style.color = '#ef4444';
+        res3note.textContent = 'Decrease';
+      } else {
+        arrow.textContent = '→';
+        arrow.style.color = '#7a7670';
+        res3note.textContent = 'No change';
+      }
+    });
+
+    const ref = [50, 100, 200, 500, 1000];
+    const pcts = [10, 15, 20, 25, 50];
+    const refBody = document.getElementById('refBody');
+    refBody.innerHTML = ref
+      .map((amt) => {
+        const cols = pcts
+          .map((p) => `<td class="px-5 py-4 text-sm text-text">${fmt((p / 100) * amt)}</td>`)
+          .join('');
+        return `
+          <tr class="border-t border-border">
+            <td class="px-5 py-4 text-sm font-medium text-muted">${amt}</td>
+            ${cols}
+          </tr>
+        `;
+      })
+      .join('');
+
+    selectTab(1);
+  </script>  </main> <footer class="border-t border-border bg-bg"> <div class="container-page"> <div class="grid grid-cols-1 gap-8 py-10 sm:grid-cols-3"> <div> <a href="/" class="inline-flex items-center gap-2"> <span class="font-heading text-lg tracking-tight text-text">CalcHub</span> </a> <p class="mt-3 text-sm leading-relaxed text-muted">Free calculators for everyday life</p> </div> <div class="sm:justify-self-center"> <h2 class="text-sm font-semibold text-text">Top calculators</h2> <div class="mt-3 grid grid-cols-1 gap-2 text-sm text-muted"> <a class="hover:text-text" href="/age-calculator">Age Calculator</a> <a class="hover:text-text" href="/mortgage-calculator">Mortgage Calculator</a> <a class="hover:text-text" href="/vat-calculator">VAT Calculator</a> <a class="hover:text-text" href="/tip-calculator">Tip Calculator</a> <a class="hover:text-text" href="/percentage-calculator">Percentage Calculator</a> </div> </div> <div class="sm:justify-self-end"> <h2 class="text-sm font-semibold text-text">Company</h2> <div class="mt-3 flex flex-col gap-2 text-sm text-muted"> <a class="hover:text-text" href="/about">About</a> <a class="hover:text-text" href="/contact">Contact</a> <a class="hover:text-text" href="/privacy-policy">Privacy Policy</a> </div> </div> </div> <div class="border-t border-border py-6"> <p class="text-sm text-muted">2026 CalcHub. All rights reserved.</p> </div> </div> </footer> </body></html>

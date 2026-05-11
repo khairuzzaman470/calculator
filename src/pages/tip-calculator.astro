@@ -1,0 +1,338 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Tip Calculator — Split Bill and Calculate Tip | CalcHub"
+  description="Free tip calculator. Calculate how much to tip and split the bill between any number of people instantly."
+>
+  <div class="mx-auto w-full max-w-4xl">
+    <nav class="text-sm text-muted" aria-label="Breadcrumb">
+      <a class="hover:text-text" href="/">Home</a>
+      <span class="px-2" aria-hidden="true">›</span>
+      <span class="text-text">Tip Calculator</span>
+    </nav>
+
+    <div class="mt-6">
+      <p class="text-sm font-medium text-muted">Calculator</p>
+      <h1 class="mt-3 font-heading text-3xl tracking-tight sm:text-4xl">Tip Calculator</h1>
+      <p class="mt-4 text-base leading-relaxed text-muted">
+        A fun, friendly way to calculate tips and split the bill. Perfect for dinners, cafés, and group outings.
+      </p>
+    </div>
+
+    <section class="mt-8 rounded-xl border border-border bg-card p-6 shadow-soft sm:p-8" aria-label="Tip calculator">
+      <div class="rounded-xl border border-border bg-bg p-5">
+        <p class="text-sm text-muted">
+          Tip vibes:
+          <span class="font-medium text-text">Okay</span>,
+          <span class="font-medium text-text">Good</span>,
+          <span class="font-medium text-text">Great</span>,
+          <span class="font-medium text-text">Excellent</span>,
+          <span class="font-medium text-text">Outstanding</span>.
+        </p>
+      </div>
+
+      <form id="tip-form" class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2" autocomplete="off">
+        <div>
+          <label class="block text-sm font-medium text-text" for="bill">Bill amount ($)</label>
+          <input
+            id="bill"
+            name="bill"
+            inputmode="decimal"
+            placeholder="e.g. 68.50"
+            class="mt-2 w-full rounded-lg border border-border bg-white px-3 py-2 text-text shadow-sm focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
+            required
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-text" for="people">People splitting</label>
+          <input
+            id="people"
+            name="people"
+            inputmode="numeric"
+            value="1"
+            class="mt-2 w-full rounded-lg border border-border bg-white px-3 py-2 text-text shadow-sm focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
+            required
+          />
+        </div>
+
+        <fieldset class="sm:col-span-2">
+          <legend class="text-sm font-medium text-text">Tip percentage</legend>
+          <div class="mt-3 flex flex-wrap gap-2">
+            <button class="tipbtn rounded-full bg-white px-4 py-2 text-sm font-semibold text-text ring-1 ring-border hover:bg-bg" type="button" data-tip="10">10% <span class="font-medium text-muted">Okay</span></button>
+            <button class="tipbtn rounded-full bg-white px-4 py-2 text-sm font-semibold text-text ring-1 ring-border hover:bg-bg" type="button" data-tip="15">15% <span class="font-medium text-muted">Good</span></button>
+            <button class="tipbtn rounded-full bg-white px-4 py-2 text-sm font-semibold text-text ring-1 ring-border hover:bg-bg" type="button" data-tip="18">18% <span class="font-medium text-muted">Great</span></button>
+            <button class="tipbtn rounded-full bg-white px-4 py-2 text-sm font-semibold text-text ring-1 ring-border hover:bg-bg" type="button" data-tip="20">20% <span class="font-medium text-muted">Excellent</span></button>
+            <button class="tipbtn rounded-full bg-white px-4 py-2 text-sm font-semibold text-text ring-1 ring-border hover:bg-bg" type="button" data-tip="25">25% <span class="font-medium text-muted">Outstanding</span></button>
+            <button class="tipbtn rounded-full bg-white px-4 py-2 text-sm font-semibold text-text ring-1 ring-border hover:bg-bg" type="button" data-tip="custom">Custom %</button>
+          </div>
+
+          <div id="customWrap" class="mt-3 hidden max-w-xs">
+            <label class="block text-sm font-medium text-text" for="customTip">Custom tip (%)</label>
+            <input
+              id="customTip"
+              name="customTip"
+              inputmode="decimal"
+              placeholder="e.g. 12"
+              class="mt-2 w-full rounded-lg border border-border bg-white px-3 py-2 text-text shadow-sm focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
+            />
+          </div>
+
+          <input type="hidden" id="tipPct" name="tipPct" value="15" />
+          <p id="tipLabel" class="mt-2 text-sm text-muted">Selected: <span class="font-semibold text-text">15%</span></p>
+        </fieldset>
+
+        <div class="sm:col-span-2">
+          <label class="inline-flex items-center gap-2 text-sm text-muted">
+            <input id="roundUp" type="checkbox" />
+            Round up to the nearest dollar per person
+          </label>
+        </div>
+
+        <div class="sm:col-span-2">
+          <button
+            type="submit"
+            class="inline-flex w-full items-center justify-center rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white shadow-sm hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-accent/30 sm:w-auto"
+          >
+            Calculate Tip
+          </button>
+          <p id="error" class="mt-3 hidden text-sm font-medium text-accent"></p>
+        </div>
+      </form>
+
+      <div class="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4" aria-label="Tip results">
+        <div class="rounded-xl border border-border bg-bg p-5">
+          <div class="text-xs font-medium uppercase tracking-wide text-muted">Tip amount</div>
+          <div id="tipAmount" class="mt-2 font-heading text-2xl text-text">—</div>
+        </div>
+        <div class="rounded-xl border border-border bg-bg p-5">
+          <div class="text-xs font-medium uppercase tracking-wide text-muted">Total incl. tip</div>
+          <div id="total" class="mt-2 font-heading text-2xl text-text">—</div>
+        </div>
+        <div class="rounded-xl border border-border bg-bg p-5">
+          <div class="text-xs font-medium uppercase tracking-wide text-muted">Amount per person</div>
+          <div id="perPerson" class="mt-2 font-heading text-2xl text-text">—</div>
+        </div>
+        <div class="rounded-xl border border-border bg-bg p-5">
+          <div class="text-xs font-medium uppercase tracking-wide text-muted">Tip per person</div>
+          <div id="tipPerPerson" class="mt-2 font-heading text-2xl text-text">—</div>
+        </div>
+      </div>
+
+      <p class="mt-6 text-sm text-muted">
+        Friendly reminder: tipping is optional and depends on service quality and local customs.
+      </p>
+    </section>
+
+    <section class="mt-12" aria-label="Tip calculator guide">
+      <article class="prose max-w-none">
+        <h1 class="font-heading text-2xl text-text">Tip Calculator</h1>
+        <p class="mt-4 text-base leading-relaxed text-muted">
+          Tipping can be surprisingly stressful, especially when you’re in a group, the bill is split unevenly, or you’re traveling in a country with different norms.
+          A tip calculator takes the awkward math out of the moment so you can focus on the meal and the company. With CalcHub’s free tip calculator, you can choose a
+          quick tip percentage, add a custom amount, and split the total between any number of people.
+        </p>
+        <p class="mt-4 text-base leading-relaxed text-muted">
+          The “right” tip depends on where you are, what kind of service you received, and whether gratuity is already included. In some places, tipping is expected
+          and supports service workers’ income. In other places, it may be uncommon or even discouraged. If you’re unsure, a simple approach is to pick a percentage
+          that matches the vibe: 10% can be okay for quick counter service, 15% is a common baseline in many regions, and 18–20% often signals great service. For
+          exceptional experiences, 25% can be a generous gesture.
+        </p>
+
+        <h2 class="mt-8 font-heading text-xl text-text">How Much Should You Tip?</h2>
+        <p class="mt-3 text-base leading-relaxed text-muted">
+          For restaurants where tipping is standard, many people choose 15–20% depending on service quality. Some diners tip a little less for minimal service and a
+          little more for attentive, friendly, or complex service. For delivery and rideshare, tips can be a mix of percentage and practicality—distance, weather, and
+          time can matter. If a service charge is already included on the bill, you may not need to tip as much, although some people still add a small extra amount.
+        </p>
+
+        <h2 class="mt-8 font-heading text-xl text-text">Tipping Etiquette by Country</h2>
+        <p class="mt-3 text-base leading-relaxed text-muted">
+          Etiquette varies a lot. In the United States and Canada, tipping in restaurants is common. In the UK and parts of Europe, service charges may be included,
+          and tipping can be smaller or optional. In Japan, tipping is generally not expected and can even feel confusing. In many places, rounding up or leaving small
+          change is typical. When traveling, check local guidance, look for “service included” on the receipt, and remember: a respectful approach beats a perfect number.
+        </p>
+
+        <h2 class="mt-8 font-heading text-xl text-text">How to Split a Bill Fairly</h2>
+        <p class="mt-3 text-base leading-relaxed text-muted">
+          The simplest split is equal shares. But if some people ordered significantly more, consider splitting by item totals. Another fair approach is to split the tip
+          equally but split the base bill by what each person ordered. If you’re trying to keep things smooth, decide your splitting method before calculating and keep it
+          consistent. The round-up option can also reduce “penny math” and make payment easier.
+        </p>
+
+        <h2 class="mt-8 font-heading text-xl text-text">Frequently Asked Questions</h2>
+
+        <h3 class="mt-5 font-heading text-lg text-text">1. How much should I tip at a restaurant?</h3>
+        <p class="mt-2 text-base leading-relaxed text-muted">
+          In places where tipping is common, 15–20% is often a typical range. Adjust based on service and whether a service charge is already included.
+        </p>
+
+        <h3 class="mt-5 font-heading text-lg text-text">2. Should you tip on pre-tax or post-tax amount?</h3>
+        <p class="mt-2 text-base leading-relaxed text-muted">
+          Many people tip on the pre-tax subtotal, while others tip on the final total for simplicity. The key is being consistent and considering local norms.
+        </p>
+
+        <h3 class="mt-5 font-heading text-lg text-text">3. Is it rude not to tip?</h3>
+        <p class="mt-2 text-base leading-relaxed text-muted">
+          It depends on the country and situation. In some places tipping is expected; in others it’s optional or uncommon. If service was poor, some people tip less,
+          but it can be kinder to communicate issues to the restaurant if possible.
+        </p>
+
+        <h3 class="mt-5 font-heading text-lg text-text">4. How do I split a bill when people ordered different things?</h3>
+        <p class="mt-2 text-base leading-relaxed text-muted">
+          Split the base amount by what each person ordered, then apply the same tip percentage to each person’s subtotal. If you want the easiest option, splitting
+          evenly is fine as long as everyone agrees.
+        </p>
+      </article>
+    </section>
+  </div>
+
+  <script is:inline>
+    const form = document.getElementById('tip-form');
+    const billEl = document.getElementById('bill');
+    const peopleEl = document.getElementById('people');
+    const tipPctEl = document.getElementById('tipPct');
+    const tipLabelEl = document.getElementById('tipLabel');
+    const customWrapEl = document.getElementById('customWrap');
+    const customTipEl = document.getElementById('customTip');
+    const roundUpEl = document.getElementById('roundUp');
+    const errorEl = document.getElementById('error');
+
+    const outTipAmount = document.getElementById('tipAmount');
+    const outTotal = document.getElementById('total');
+    const outPerPerson = document.getElementById('perPerson');
+    const outTipPerPerson = document.getElementById('tipPerPerson');
+
+    function parseNumber(value) {
+      if (!value) return null;
+      const cleaned = String(value).replace(/[^0-9.\-]/g, '');
+      const n = Number(cleaned);
+      return Number.isFinite(n) ? n : null;
+    }
+
+    function moneyUSD(n) {
+      if (n === null) return '—';
+      return new Intl.NumberFormat(undefined, {
+        style: 'currency',
+        currency: 'USD',
+        maximumFractionDigits: 2,
+      }).format(n);
+    }
+
+    function setError(message) {
+      if (!message) {
+        errorEl.classList.add('hidden');
+        errorEl.textContent = '';
+        return;
+      }
+      errorEl.classList.remove('hidden');
+      errorEl.textContent = message;
+    }
+
+    function renderEmpty() {
+      outTipAmount.textContent = '—';
+      outTotal.textContent = '—';
+      outPerPerson.textContent = '—';
+      outTipPerPerson.textContent = '—';
+    }
+
+    function getTipPct() {
+      const raw = tipPctEl.value;
+      if (raw === 'custom') {
+        return parseNumber(customTipEl.value);
+      }
+      return Number(raw);
+    }
+
+    function setSelectedTipLabel(pct) {
+      tipLabelEl.innerHTML = 'Selected: <span class="font-semibold text-text">' + pct + '%</span>';
+    }
+
+    function selectTip(value) {
+      if (value === 'custom') {
+        tipPctEl.value = 'custom';
+        customWrapEl.classList.remove('hidden');
+        setSelectedTipLabel('Custom');
+      } else {
+        tipPctEl.value = String(value);
+        customWrapEl.classList.add('hidden');
+        customTipEl.value = '';
+        setSelectedTipLabel(value);
+      }
+      calculate();
+    }
+
+    function calculate() {
+      setError('');
+      const bill = parseNumber(billEl.value);
+      const people = parseNumber(peopleEl.value);
+      const tipPct = getTipPct();
+
+      if (bill === null || people === null || tipPct === null) {
+        renderEmpty();
+        return;
+      }
+
+      if (bill < 0) {
+        setError('Bill amount cannot be negative.');
+        renderEmpty();
+        return;
+      }
+
+      if (people <= 0) {
+        setError('Number of people must be at least 1.');
+        renderEmpty();
+        return;
+      }
+
+      if (tipPct < 0) {
+        setError('Tip percentage cannot be negative.');
+        renderEmpty();
+        return;
+      }
+
+      const tipAmount = bill * (tipPct / 100);
+      const total = bill + tipAmount;
+
+      let perPerson = total / people;
+      if (roundUpEl.checked) {
+        perPerson = Math.ceil(perPerson);
+      }
+
+      const totalRounded = perPerson * people;
+      const tipRounded = totalRounded - bill;
+      const tipPerPerson = tipRounded / people;
+
+      outTipAmount.textContent = moneyUSD(tipRounded);
+      outTotal.textContent = moneyUSD(totalRounded);
+      outPerPerson.textContent = moneyUSD(perPerson);
+      outTipPerPerson.textContent = moneyUSD(tipPerPerson);
+    }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      calculate();
+    });
+
+    document.querySelectorAll('button.tipbtn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const v = btn.dataset.tip;
+        if (v === 'custom') selectTip('custom');
+        else selectTip(Number(v));
+      });
+    });
+
+    ;[billEl, peopleEl, customTipEl].forEach((el) => {
+      el.addEventListener('input', calculate);
+      el.addEventListener('change', calculate);
+    });
+
+    roundUpEl.addEventListener('change', calculate);
+
+    selectTip(15);
+    peopleEl.value = '1';
+    renderEmpty();
+  </script>
+</BaseLayout>

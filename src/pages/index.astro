@@ -1,0 +1,131 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import ToolCard from "../components/ToolCard.astro";
+
+const tools = [
+  {
+    icon: "🎂",
+    href: "/age-calculator",
+    title: "Age Calculator",
+    description: "Find your exact age in years, months and days",
+  },
+  {
+    icon: "🏠",
+    href: "/mortgage-calculator",
+    title: "Mortgage Calculator",
+    description: "Calculate monthly payments and total cost",
+  },
+  {
+    icon: "🧾",
+    href: "/vat-calculator",
+    title: "VAT Calculator",
+    description: "Add or remove VAT from any price instantly",
+  },
+  {
+    icon: "⚖️",
+    href: "/bmi-calculator",
+    title: "BMI Calculator",
+    description: "Check your Body Mass Index and healthy range",
+  },
+  {
+    icon: "💰",
+    href: "/loan-calculator",
+    title: "Loan Calculator",
+    description: "Monthly EMI and total interest for any loan",
+  },
+  {
+    icon: "💱",
+    href: "/currency-converter",
+    title: "Currency Converter",
+    description: "Live exchange rates for 30+ currencies",
+  },
+  {
+    icon: "🥂",
+    href: "/tip-calculator",
+    title: "Tip Calculator",
+    description: "Calculate tip and split the bill easily",
+  },
+  {
+    icon: "📈",
+    href: "/compound-interest-calculator",
+    title: "Compound Interest Calculator",
+    description: "See how your savings grow over time",
+  },
+  {
+    icon: "📅",
+    href: "/date-difference-calculator",
+    title: "Date Difference Calculator",
+    description: "Find days, weeks and months between two dates",
+  },
+  {
+    icon: "％",
+    href: "/percentage-calculator",
+    title: "Percentage Calculator",
+    description: "Three ways to calculate any percentage",
+  },
+];
+
+const comingSoon = [
+  {
+    icon: "🔒",
+    href: "#",
+    title: "More tools coming",
+    description: "New calculators are being added regularly.",
+    locked: true,
+  },
+  {
+    icon: "🔒",
+    href: "#",
+    title: "More tools coming",
+    description: "New calculators are being added regularly.",
+    locked: true,
+  },
+  {
+    icon: "🔒",
+    href: "#",
+    title: "More tools coming",
+    description: "New calculators are being added regularly.",
+    locked: true,
+  },
+];
+---
+<BaseLayout
+  title="CalcHub — Free Online Calculators"
+  description="Fast, accurate tools for everyday decisions. No sign-up. No ads. Always free."
+>
+  <section>
+    <div class="rounded-xl border border-border bg-card p-6 shadow-soft sm:p-10">
+      <div class="inline-flex items-center rounded-full bg-bg px-3 py-1 text-xs font-semibold text-muted ring-1 ring-border">
+        10 Free Tools
+      </div>
+      <h1 class="mt-4 font-heading text-3xl tracking-tight sm:text-4xl">
+        Free Online Calculators
+      </h1>
+      <p class="mt-4 max-w-2xl text-base leading-relaxed text-muted">
+        Fast, accurate tools for everyday decisions. No sign-up. No ads. Always free.
+      </p>
+    </div>
+
+    <div class="mt-10">
+      <div class="flex items-end justify-between gap-4">
+        <h2 class="font-heading text-xl sm:text-2xl">All Calculators</h2>
+      </div>
+      <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {tools.map((tool) => (
+          <ToolCard {...tool} />
+        ))}
+      </div>
+    </div>
+
+    <div class="mt-12">
+      <div class="flex items-end justify-between gap-4">
+        <h2 class="font-heading text-xl sm:text-2xl">More tools coming soon</h2>
+      </div>
+      <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {comingSoon.map((tool) => (
+          <ToolCard {...tool} />
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  font-family: theme('fontFamily.body');
+  background: theme('colors.bg');
+  color: theme('colors.text');
+}
+
+::selection {
+  background: theme('colors.accent');
+  color: #ffffff;
+}
+
+.container-page {
+  @apply mx-auto w-full max-w-6xl px-4;
+}
+
+.link-accent {
+  @apply text-accent underline underline-offset-4 decoration-border hover:decoration-accent;
+}

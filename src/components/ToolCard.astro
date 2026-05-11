@@ -1,0 +1,44 @@
+---
+type Props = {
+  href: string;
+  icon?: string;
+  title: string;
+  description: string;
+  tag?: string;
+  locked?: boolean;
+};
+
+const { href, icon, title, description, tag, locked = false } = Astro.props;
+---
+<a
+  href={locked ? undefined : href}
+  aria-disabled={locked ? "true" : undefined}
+  class={`group block rounded-xl border border-border bg-card p-5 shadow-soft transition ${
+    locked
+      ? "cursor-not-allowed opacity-75"
+      : "hover:-translate-y-0.5 hover:border-accent/40 hover:shadow"
+  }`}
+>
+  <div class="flex items-start justify-between gap-4">
+    <div class="flex items-start gap-3">
+      <div class="mt-0.5 flex size-10 items-center justify-center rounded-lg bg-bg ring-1 ring-border">
+        <span class="text-lg" aria-hidden="true">{icon ?? ""}</span>
+      </div>
+      <div>
+        <h3 class="font-heading text-lg leading-snug text-text">{title}</h3>
+      <p class="mt-2 text-sm leading-relaxed text-muted">{description}</p>
+      </div>
+    </div>
+    {tag ? (
+      <span class="shrink-0 rounded-full bg-bg px-3 py-1 text-xs font-medium text-muted ring-1 ring-border">
+        {tag}
+      </span>
+    ) : null}
+  </div>
+  <div class={`mt-4 flex items-center gap-2 text-sm font-medium ${locked ? "text-muted" : "text-accent"}`}>
+    <span class={`underline underline-offset-4 decoration-border ${locked ? "" : "group-hover:decoration-accent"}`}>
+      {locked ? "Locked" : "Open"}
+    </span>
+    <span aria-hidden="true">→</span>
+  </div>
+</a>
