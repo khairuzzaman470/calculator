@@ -1,5 +1,8 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+
+/** Optional; live rates work without it via Frankfurter (ECB). ExchangeRate API adds more currencies. */
+const publicExchangeApiKey = import.meta.env.PUBLIC_EXCHANGE_RATE_API_KEY ?? "";
 ---
 
 <BaseLayout
@@ -207,9 +210,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     </section>
   </div>
 
-  <script is:inline>
-    const API_KEY = import.meta.env.PUBLIC_EXCHANGE_RATE_API_KEY;
-    const BASE = 'USD';
+  <script define:vars={{ publicExchangeApiKey }}>
+    const BASE = "USD";
 
     const statusEl = document.getElementById('status');
     const form = document.getElementById('fx-form');
@@ -319,42 +321,74 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       render();
     }
 
-    async function loadRates() {
-      if (!API_KEY) {
-        setStatus('Live rates unavailable: missing API key. Set PUBLIC_EXCHANGE_RATE_API_KEY in your environment.', 'error');
-        renderEmpty();
-        return;
+    async function loadFromExchangeRateApi() {
+      if (!publicExchangeApiKey) throw new Error('No API key');
+      const url =
+        'https://v6.exchangerate-api.com/v6/' +
+        encodeURIComponent(publicExchangeApiKey) +
+        '/latest/' +
+        BASE;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+
+      if (!data || data.result !== 'success' || !data.conversion_rates) {
+        throw new Error('Unexpected API response');
       }
 
+      rates = data.conversion_rates;
+      if (data.time_last_update_unix) {
+        const d = new Date(data.time_last_update_unix * 1000);
+        lastUpdated = new Intl.DateTimeFormat(undefined, {
+          year: 'numeric',
+          month: 'short',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+        }).format(d);
+      }
+    }
+
+    async function loadFromFrankfurter() {
+      const url = 'https://api.frankfurter.app/latest?from=' + encodeURIComponent(BASE);
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+      if (!data || typeof data.rates !== 'object' || data.rates === null) {
+        throw new Error('Unexpected Frankfurter response');
+      }
+      rates = { USD: 1, ...data.rates };
+      if (data.date) {
+        lastUpdated = data.date + ' (ECB)';
+      }
+    }
+
+    async function loadRates() {
       setStatus('Loading live rates...');
+      setError('');
+
+      if (publicExchangeApiKey) {
+        try {
+          await loadFromExchangeRateApi();
+          setStatus('Live rates loaded.');
+          render();
+          return;
+        } catch (e) {
+          setStatus('Primary API failed, trying fallback rates…');
+        }
+      }
 
       try {
-        const url = 'https://v6.exchangerate-api.com/v6/' + encodeURIComponent(API_KEY) + '/latest/' + BASE;
-        const res = await fetch(url);
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        const data = await res.json();
-
-        if (!data || data.result !== 'success' || !data.conversion_rates) {
-          throw new Error('Unexpected API response');
-        }
-
-        rates = data.conversion_rates;
-        if (data.time_last_update_unix) {
-          const d = new Date(data.time_last_update_unix * 1000);
-          lastUpdated = new Intl.DateTimeFormat(undefined, {
-            year: 'numeric',
-            month: 'short',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-          }).format(d);
-        }
-
-        setStatus('Live rates loaded.');
+        await loadFromFrankfurter();
+        setStatus(
+          publicExchangeApiKey
+            ? 'Live rates loaded (fallback feed).'
+            : 'Live rates loaded (ECB / business-day updates).'
+        );
         render();
       } catch (e) {
         setStatus('Sorry — we could not load live exchange rates right now. Please try again later.', 'error');
-        setError('API error: ' + (e && e.message ? e.message : 'Unknown error'));
+        setError('Network error: ' + (e && e.message ? e.message : 'Unknown error'));
         renderEmpty();
       }
     }
