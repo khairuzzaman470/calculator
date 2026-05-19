@@ -350,7 +350,9 @@ const publicExchangeApiKey = import.meta.env.PUBLIC_EXCHANGE_RATE_API_KEY ?? "";
     }
 
     async function loadFromFrankfurter() {
-      const url = 'https://api.frankfurter.app/latest?from=' + encodeURIComponent(BASE);
+      // Use api.frankfurter.dev directly. The old .app host 301-redirects to .dev without
+      // CORS headers on the redirect response, so browser fetch() from the site often fails.
+      const url = 'https://api.frankfurter.dev/v1/latest?from=' + encodeURIComponent(BASE);
       const res = await fetch(url);
       if (!res.ok) throw new Error('HTTP ' + res.status);
       const data = await res.json();
