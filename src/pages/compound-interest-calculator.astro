@@ -121,17 +121,33 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         </div>
       </div>
 
-      <div class="mt-6 overflow-hidden rounded-xl border border-border" aria-label="Year-by-year growth">
+      <div class="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border bg-card px-5 py-4">
+        <p class="text-sm text-muted">Growth schedule</p>
+        <fieldset class="flex flex-wrap items-center gap-4 border-0 p-0 text-sm">
+          <legend class="sr-only">Table granularity</legend>
+          <span class="font-medium text-text">View</span>
+          <label class="inline-flex cursor-pointer items-center gap-2 text-muted">
+            <input type="radio" name="compoundGranularity" value="year" checked class="accent-accent" />
+            By year
+          </label>
+          <label class="inline-flex cursor-pointer items-center gap-2 text-muted">
+            <input type="radio" name="compoundGranularity" value="month" class="accent-accent" />
+            By month
+          </label>
+        </fieldset>
+      </div>
+
+      <div class="mt-4 overflow-hidden rounded-xl border border-border" aria-label="Growth schedule">
         <div class="bg-card px-5 py-4">
-          <h2 class="font-heading text-lg text-text">Year-by-year growth</h2>
-          <p class="mt-1 text-sm text-muted">A simple annual summary of contributions and interest.</p>
+          <h2 class="font-heading text-lg text-text">Growth schedule</h2>
+          <p class="mt-1 text-sm text-muted">Contributions and interest by year or by month (aligned with your compound frequency).</p>
         </div>
-        <div class="overflow-x-auto bg-white">
+        <div class="max-h-[min(28rem,70vh)] overflow-x-auto overflow-y-auto bg-white">
           <table class="min-w-full border-collapse">
-            <thead>
-              <tr class="border-t border-border bg-bg">
-                <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted">Year</th>
-                <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted">Opening Balance</th>
+            <thead class="sticky top-0 z-10 bg-bg shadow-sm">
+              <tr class="border-t border-border">
+                <th id="growthPeriodHead" class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted">Year</th>
+                <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted">Opening balance</th>
                 <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted">Interest</th>
                 <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted">Contributions</th>
                 <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted">Balance</th>
@@ -139,11 +155,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
             </thead>
             <tbody id="tableBody">
               <tr class="border-t border-border">
-                <td class="px-5 py-4 text-sm text-muted">—</td>
-                <td class="px-5 py-4 text-sm text-text">—</td>
-                <td class="px-5 py-4 text-sm text-text">—</td>
-                <td class="px-5 py-4 text-sm text-text">—</td>
-                <td class="px-5 py-4 text-sm text-text">—</td>
+                <td class="px-5 py-4 text-sm text-muted" colspan="5">Calculate to see the schedule.</td>
               </tr>
             </tbody>
           </table>
@@ -161,8 +173,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         </p>
         <p class="mt-4 text-base leading-relaxed text-muted">
           This free compound interest calculator lets you model an initial investment, optional monthly contributions, and a chosen interest rate. You can also
-          select how often interest compounds—annually, quarterly, monthly, or even daily. While higher compounding frequency can increase growth slightly, the
-          biggest drivers are usually the interest rate, time horizon, and consistent contributions.
+          select how often interest compounds—annually, quarterly, monthly, or even daily—and switch the growth schedule between yearly and monthly views. While higher
+          compounding frequency can increase growth slightly, the biggest drivers are usually the interest rate, time horizon, and consistent contributions.
         </p>
 
         <h2 class="mt-8 font-heading text-xl text-text">What is Compound Interest?</h2>
@@ -235,6 +247,15 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     const outInterestPct = document.getElementById('interestPct');
     const outYears = document.getElementById('yearsOut');
     const tableBody = document.getElementById('tableBody');
+    const growthPeriodHead = document.getElementById('growthPeriodHead');
+
+    let lastCompoundMonthRows = null;
+    let lastCompoundYearRows = null;
+
+    function compoundGranularity() {
+      const el = document.querySelector('input[name="compoundGranularity"]:checked');
+      return el && el.value === 'month' ? 'month' : 'year';
+    }
 
     function parseNumber(value) {
       if (!value) return null;
@@ -268,15 +289,105 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       outInterest.textContent = '—';
       outInterestPct.textContent = '—';
       outYears.textContent = '—';
+      lastCompoundMonthRows = null;
+      lastCompoundYearRows = null;
       tableBody.innerHTML = `
         <tr class="border-t border-border">
-          <td class="px-5 py-4 text-sm text-muted">—</td>
-          <td class="px-5 py-4 text-sm text-text">—</td>
-          <td class="px-5 py-4 text-sm text-text">—</td>
-          <td class="px-5 py-4 text-sm text-text">—</td>
-          <td class="px-5 py-4 text-sm text-text">—</td>
+          <td class="px-5 py-4 text-sm text-muted" colspan="5">Calculate to see the schedule.</td>
         </tr>
       `;
+    }
+
+    function buildGrowthSchedules(principal, monthlyContribution, annualRate, years, f) {
+      const totalPeriods = Math.round(years * f);
+      const totalMonths = Math.max(1, Math.round(years * 12));
+      const r = annualRate / 100;
+      let balance = principal;
+      let totalContrib = principal;
+      let p = 0;
+      const monthRows = [];
+
+      for (let month = 1; month <= totalMonths; month += 1) {
+        const opening = balance;
+        let interestM = 0;
+        let contribM = 0;
+        const endP = Math.floor((month * totalPeriods) / totalMonths);
+        while (p < endP && p < totalPeriods) {
+          const periodRate = r / f;
+          const interest = balance * periodRate;
+          balance += interest;
+          interestM += interest;
+          const contrib = monthlyContribution * (12 / f);
+          balance += contrib;
+          contribM += contrib;
+          totalContrib += contrib;
+          p += 1;
+        }
+        monthRows.push({ month, opening, interest: interestM, contributions: contribM, balance });
+      }
+
+      const yearRows = [];
+      const ySlots = Math.ceil(totalMonths / 12) || 1;
+      for (let y = 1; y <= ySlots; y += 1) {
+        const slice = monthRows.slice((y - 1) * 12, y * 12);
+        if (slice.length === 0) break;
+        let intY = 0;
+        let conY = 0;
+        slice.forEach((row) => {
+          intY += row.interest;
+          conY += row.contributions;
+        });
+        yearRows.push({
+          year: y,
+          opening: slice[0].opening,
+          interest: intY,
+          contributions: conY,
+          balance: slice[slice.length - 1].balance,
+        });
+      }
+
+      return { monthRows, yearRows, final: balance, totalContrib };
+    }
+
+    function renderGrowthTable() {
+      if (!lastCompoundMonthRows || lastCompoundMonthRows.length === 0) {
+        growthPeriodHead.textContent = 'Year';
+        tableBody.innerHTML =
+          '<tr class="border-t border-border"><td class="px-5 py-4 text-sm text-muted" colspan="5">Calculate to see the schedule.</td></tr>';
+        return;
+      }
+
+      const gran = compoundGranularity();
+      growthPeriodHead.textContent = gran === 'month' ? 'Month' : 'Year';
+
+      let rows = '';
+      if (gran === 'year') {
+        lastCompoundYearRows.forEach((row) => {
+          rows += `
+          <tr class="border-t border-border">
+            <td class="px-5 py-4 text-sm text-muted">Year ${row.year}</td>
+            <td class="px-5 py-4 text-sm text-text">${moneyUSD(row.opening)}</td>
+            <td class="px-5 py-4 text-sm text-text">${moneyUSD(row.interest)}</td>
+            <td class="px-5 py-4 text-sm text-text">${moneyUSD(row.contributions)}</td>
+            <td class="px-5 py-4 text-sm text-text">${moneyUSD(row.balance)}</td>
+          </tr>
+        `;
+        });
+      } else {
+        lastCompoundMonthRows.forEach((row) => {
+          rows += `
+          <tr class="border-t border-border">
+            <td class="px-5 py-4 text-sm text-muted">Month ${row.month}</td>
+            <td class="px-5 py-4 text-sm text-text">${moneyUSD(row.opening)}</td>
+            <td class="px-5 py-4 text-sm text-text">${moneyUSD(row.interest)}</td>
+            <td class="px-5 py-4 text-sm text-text">${moneyUSD(row.contributions)}</td>
+            <td class="px-5 py-4 text-sm text-text">${moneyUSD(row.balance)}</td>
+          </tr>
+        `;
+        });
+      }
+
+      tableBody.innerHTML = rows;
     }
 
     function periodsPerYear() {
@@ -316,7 +427,6 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       }
 
       const f = periodsPerYear();
-      const r = annualRate / 100;
       const totalPeriods = Math.round(years * f);
 
       if (totalPeriods <= 0) {
@@ -326,46 +436,12 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       }
 
       const monthlyContribution = monthly;
-      let balance = principal;
-      let totalContrib = principal;
+      const res = buildGrowthSchedules(principal, monthlyContribution, annualRate, years, f);
+      lastCompoundMonthRows = res.monthRows;
+      lastCompoundYearRows = res.yearRows;
 
-      let rows = '';
-
-      for (let year = 1; year <= Math.round(years); year += 1) {
-        const opening = balance;
-        let interestYear = 0;
-        let contribYear = 0;
-
-        const startP = (year - 1) * f;
-        const endP = Math.min(year * f, totalPeriods);
-
-        for (let p = startP; p < endP; p += 1) {
-          const periodRate = r / f;
-          const interest = balance * periodRate;
-          balance += interest;
-          interestYear += interest;
-
-          const monthsInPeriod = 12 / f;
-          const contrib = monthlyContribution * monthsInPeriod;
-          balance += contrib;
-          contribYear += contrib;
-          totalContrib += contrib;
-        }
-
-        const yearEnd = balance;
-
-        rows += `
-          <tr class="border-t border-border">
-            <td class="px-5 py-4 text-sm text-muted">${year}</td>
-            <td class="px-5 py-4 text-sm text-text">${moneyUSD(opening)}</td>
-            <td class="px-5 py-4 text-sm text-text">${moneyUSD(interestYear)}</td>
-            <td class="px-5 py-4 text-sm text-text">${moneyUSD(contribYear)}</td>
-            <td class="px-5 py-4 text-sm text-text">${moneyUSD(yearEnd)}</td>
-          </tr>
-        `;
-      }
-
-      const final = balance;
+      const final = res.final;
+      const totalContrib = res.totalContrib;
       const totalInterest = final - totalContrib;
       const pct = final === 0 ? 0 : (totalInterest / final) * 100;
 
@@ -375,7 +451,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       outInterestPct.textContent = pct.toFixed(1) + '%';
       outYears.textContent = String(Math.round(years));
 
-      tableBody.innerHTML = rows;
+      renderGrowthTable();
     }
 
     form.addEventListener('submit', (e) => {
@@ -386,6 +462,12 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     ;[principalEl, monthlyEl, rateEl, yearsEl, freqEl].forEach((el) => {
       el.addEventListener('input', calculate);
       el.addEventListener('change', calculate);
+    });
+
+    document.querySelectorAll('input[name="compoundGranularity"]').forEach((el) => {
+      el.addEventListener('change', () => {
+        if (lastCompoundMonthRows && lastCompoundMonthRows.length) renderGrowthTable();
+      });
     });
 
     renderEmpty();

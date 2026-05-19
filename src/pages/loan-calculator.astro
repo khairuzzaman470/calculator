@@ -127,16 +127,33 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         </div>
       </div>
 
-      <div class="mt-6 overflow-hidden rounded-xl border border-border" aria-label="Year-by-year payoff summary">
+      <div class="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border bg-card px-5 py-4">
+        <p class="text-sm text-muted">Payoff schedule</p>
+        <fieldset class="flex flex-wrap items-center gap-4 border-0 p-0 text-sm">
+          <legend class="sr-only">Table granularity</legend>
+          <span class="font-medium text-text">View</span>
+          <label class="inline-flex cursor-pointer items-center gap-2 text-muted">
+            <input type="radio" name="loanGranularity" value="year" checked class="accent-accent" />
+            By year
+          </label>
+          <label class="inline-flex cursor-pointer items-center gap-2 text-muted">
+            <input type="radio" name="loanGranularity" value="month" class="accent-accent" />
+            By month
+          </label>
+        </fieldset>
+      </div>
+
+      <div class="mt-4 overflow-hidden rounded-xl border border-border" aria-label="Payoff summary">
         <div class="bg-card px-5 py-4">
-          <h2 class="font-heading text-lg text-text">Year-by-year payoff summary</h2>
-          <p class="mt-1 text-sm text-muted">A simple view of remaining balance and interest paid each year.</p>
+          <h2 class="font-heading text-lg text-text">Payoff summary</h2>
+          <p class="mt-1 text-sm text-muted">Interest, principal, and remaining balance by year or by month.</p>
         </div>
-        <div class="overflow-x-auto bg-white">
+        <div class="max-h-[min(28rem,70vh)] overflow-x-auto overflow-y-auto bg-white">
           <table class="min-w-full border-collapse">
-            <thead>
-              <tr class="border-t border-border bg-bg">
-                <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted">Year</th>
+            <thead class="sticky top-0 z-10 bg-bg shadow-sm">
+              <tr class="border-t border-border">
+                <th id="loanPeriodHead" class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted">Year</th>
+                <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted">Payments</th>
                 <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted">Interest paid</th>
                 <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted">Principal paid</th>
                 <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted">Remaining balance</th>
@@ -144,10 +161,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
             </thead>
             <tbody id="yearBody">
               <tr class="border-t border-border">
-                <td class="px-5 py-4 text-sm text-muted">—</td>
-                <td class="px-5 py-4 text-sm text-text">—</td>
-                <td class="px-5 py-4 text-sm text-text">—</td>
-                <td class="px-5 py-4 text-sm text-text">—</td>
+                <td class="px-5 py-4 text-sm text-muted" colspan="5">Calculate to see the schedule.</td>
               </tr>
             </tbody>
           </table>
@@ -248,6 +262,14 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     const pBar = document.getElementById('pBar');
     const iBar = document.getElementById('iBar');
     const yearBody = document.getElementById('yearBody');
+    const loanPeriodHead = document.getElementById('loanPeriodHead');
+
+    let lastLoanMonths = null;
+
+    function loanScheduleGranularity() {
+      const el = document.querySelector('input[name="loanGranularity"]:checked');
+      return el && el.value === 'month' ? 'month' : 'year';
+    }
 
     function parseNumber(value) {
       if (!value) return null;
@@ -285,12 +307,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       iBar.style.width = '0%';
       yearBody.innerHTML = `
         <tr class="border-t border-border">
-          <td class="px-5 py-4 text-sm text-muted">—</td>
-          <td class="px-5 py-4 text-sm text-text">—</td>
-          <td class="px-5 py-4 text-sm text-text">—</td>
-          <td class="px-5 py-4 text-sm text-text">—</td>
+          <td class="px-5 py-4 text-sm text-muted" colspan="5">Calculate to see the schedule.</td>
         </tr>
       `;
+      lastLoanMonths = null;
     }
 
     function termUnit() {
@@ -310,37 +330,70 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       return (P * r * pow) / (pow - 1);
     }
 
-    function buildYearTable(P, annualRate, months, emi) {
+    function buildLoanMonthlyRows(P, annualRate, months, emi) {
       const r = annualRate / 100 / 12;
       let balance = P;
+      const rows = [];
+      for (let i = 0; i < months; i += 1) {
+        const interest = balance * r;
+        const principalPaid = emi - interest;
+        balance -= principalPaid;
+        if (balance < 0) balance = 0;
+        rows.push({ monthNum: i + 1, payment: emi, interest, principalPaid, balance });
+      }
+      return rows;
+    }
+
+    function renderLoanScheduleTable() {
+      if (!lastLoanMonths || lastLoanMonths.length === 0) {
+        yearBody.innerHTML =
+          '<tr class="border-t border-border"><td class="px-5 py-4 text-sm text-muted" colspan="5">Calculate to see the schedule.</td></tr>';
+        return;
+      }
+
+      const gran = loanScheduleGranularity();
+      loanPeriodHead.textContent = gran === 'month' ? 'Month' : 'Year';
+
+      const n = lastLoanMonths.length;
       let rows = '';
 
-      const totalYears = Math.ceil(months / 12);
-
-      for (let y = 1; y <= totalYears; y += 1) {
-        let interestYear = 0;
-        let principalYear = 0;
-
-        const startMonth = (y - 1) * 12;
-        const endMonth = Math.min(y * 12, months);
-
-        for (let m = startMonth; m < endMonth; m += 1) {
-          const interest = balance * r;
-          const principalPaid = emi - interest;
-          interestYear += interest;
-          principalYear += principalPaid;
-          balance -= principalPaid;
-          if (balance < 0) balance = 0;
-        }
-
-        rows += `
+      if (gran === 'year') {
+        const totalYears = Math.ceil(n / 12);
+        for (let y = 1; y <= totalYears; y += 1) {
+          let interestYear = 0;
+          let principalYear = 0;
+          const startMonth = (y - 1) * 12;
+          const endMonth = Math.min(y * 12, n);
+          const numMonths = endMonth - startMonth;
+          for (let m = startMonth; m < endMonth; m += 1) {
+            interestYear += lastLoanMonths[m].interest;
+            principalYear += lastLoanMonths[m].principalPaid;
+          }
+          const endIdx = endMonth - 1;
+          const payTotal = numMonths * lastLoanMonths[0].payment;
+          rows += `
           <tr class="border-t border-border">
             <td class="px-5 py-4 text-sm text-muted">Year ${y}</td>
+            <td class="px-5 py-4 text-sm text-text">${moneyUSD(payTotal)}</td>
             <td class="px-5 py-4 text-sm text-text">${moneyUSD(interestYear)}</td>
             <td class="px-5 py-4 text-sm text-text">${moneyUSD(principalYear)}</td>
-            <td class="px-5 py-4 text-sm text-text">${moneyUSD(balance)}</td>
+            <td class="px-5 py-4 text-sm text-text">${moneyUSD(lastLoanMonths[endIdx].balance)}</td>
           </tr>
         `;
+        }
+      } else {
+        for (let i = 0; i < n; i += 1) {
+          const row = lastLoanMonths[i];
+          rows += `
+          <tr class="border-t border-border">
+            <td class="px-5 py-4 text-sm text-muted">Month ${row.monthNum}</td>
+            <td class="px-5 py-4 text-sm text-text">${moneyUSD(row.payment)}</td>
+            <td class="px-5 py-4 text-sm text-text">${moneyUSD(row.interest)}</td>
+            <td class="px-5 py-4 text-sm text-text">${moneyUSD(row.principalPaid)}</td>
+            <td class="px-5 py-4 text-sm text-text">${moneyUSD(row.balance)}</td>
+          </tr>
+        `;
+        }
       }
 
       yearBody.innerHTML = rows;
@@ -404,7 +457,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       pBar.style.width = Math.max(0, Math.min(100, principalPct)) + '%';
       iBar.style.width = Math.max(0, Math.min(100, interestPct)) + '%';
 
-      buildYearTable(amount, annualRate, months, emi);
+      lastLoanMonths = buildLoanMonthlyRows(amount, annualRate, months, emi);
+      renderLoanScheduleTable();
 
       void typeEl.value;
     }
@@ -423,6 +477,12 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       el.addEventListener('change', () => {
         updateTermHint();
         calculate();
+      });
+    });
+
+    form.querySelectorAll('input[name="loanGranularity"]').forEach((el) => {
+      el.addEventListener('change', () => {
+        if (lastLoanMonths) renderLoanScheduleTable();
       });
     });
 

@@ -123,40 +123,64 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         </div>
       </div>
 
-      <div class="mt-6 overflow-hidden rounded-xl border border-border" aria-label="Amortization summary">
+      <div class="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border bg-card px-5 py-4">
+        <p class="text-sm text-muted">Schedule tables</p>
+        <fieldset class="flex flex-wrap items-center gap-4 border-0 p-0 text-sm">
+          <legend class="sr-only">Table granularity</legend>
+          <span class="font-medium text-text">View</span>
+          <label class="inline-flex cursor-pointer items-center gap-2 text-muted">
+            <input type="radio" name="mortgageGranularity" value="year" checked class="accent-accent" />
+            By year
+          </label>
+          <label class="inline-flex cursor-pointer items-center gap-2 text-muted">
+            <input type="radio" name="mortgageGranularity" value="month" class="accent-accent" />
+            By month
+          </label>
+        </fieldset>
+      </div>
+
+      <div class="mt-4 overflow-hidden rounded-xl border border-border" aria-label="Amortization summary">
         <div class="bg-card px-5 py-4">
           <h2 class="font-heading text-lg text-text">Amortization summary</h2>
-          <p class="mt-1 text-sm text-muted">A simple snapshot of how your balance changes over time.</p>
+          <p class="mt-1 text-sm text-muted">Remaining balance and cumulative interest over time.</p>
         </div>
-        <div class="overflow-x-auto bg-white">
+        <div class="max-h-[min(28rem,70vh)] overflow-x-auto overflow-y-auto bg-white">
           <table class="min-w-full border-collapse">
-            <thead>
-              <tr class="border-t border-border bg-bg">
-                <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted">Period</th>
+            <thead class="sticky top-0 z-10 bg-bg shadow-sm">
+              <tr class="border-t border-border">
+                <th id="amortPeriodHead" class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted">Year</th>
                 <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted">Remaining balance</th>
                 <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted">Total interest paid</th>
               </tr>
             </thead>
             <tbody id="amortBody">
               <tr class="border-t border-border">
-                <td class="px-5 py-4 text-sm text-muted">Year 1</td>
-                <td class="px-5 py-4 text-sm text-text">—</td>
-                <td class="px-5 py-4 text-sm text-text">—</td>
+                <td class="px-5 py-4 text-sm text-muted" colspan="3">Calculate to see the schedule.</td>
               </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="mt-6 overflow-hidden rounded-xl border border-border" aria-label="Payoff summary">
+        <div class="bg-card px-5 py-4">
+          <h2 class="font-heading text-lg text-text">Payoff summary</h2>
+          <p class="mt-1 text-sm text-muted">How much goes to principal vs interest each period.</p>
+        </div>
+        <div class="max-h-[min(28rem,70vh)] overflow-x-auto overflow-y-auto bg-white">
+          <table class="min-w-full border-collapse">
+            <thead class="sticky top-0 z-10 bg-bg shadow-sm">
               <tr class="border-t border-border">
-                <td class="px-5 py-4 text-sm text-muted">Year 5</td>
-                <td class="px-5 py-4 text-sm text-text">—</td>
-                <td class="px-5 py-4 text-sm text-text">—</td>
+                <th id="payoffPeriodHead" class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted">Year</th>
+                <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted">Payments</th>
+                <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted">Principal paid</th>
+                <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted">Interest paid</th>
+                <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted">Remaining balance</th>
               </tr>
+            </thead>
+            <tbody id="payoffBody">
               <tr class="border-t border-border">
-                <td class="px-5 py-4 text-sm text-muted">Year 10</td>
-                <td class="px-5 py-4 text-sm text-text">—</td>
-                <td class="px-5 py-4 text-sm text-text">—</td>
-              </tr>
-              <tr class="border-t border-border">
-                <td class="px-5 py-4 text-sm text-muted">Final Year</td>
-                <td class="px-5 py-4 text-sm text-text">—</td>
-                <td class="px-5 py-4 text-sm text-text">—</td>
+                <td class="px-5 py-4 text-sm text-muted" colspan="5">Calculate to see the schedule.</td>
               </tr>
             </tbody>
           </table>
@@ -249,6 +273,19 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     const outTotal = document.getElementById('total');
     const outPayoff = document.getElementById('payoff');
     const amortBody = document.getElementById('amortBody');
+    const payoffBody = document.getElementById('payoffBody');
+    const amortPeriodHead = document.getElementById('amortPeriodHead');
+    const payoffPeriodHead = document.getElementById('payoffPeriodHead');
+
+    let lastSchedule = null;
+    let lastStartYear = null;
+    let lastStartMonthIndex = null;
+    let lastTermYears = null;
+
+    function scheduleGranularity() {
+      const el = document.querySelector('input[name="mortgageGranularity"]:checked');
+      return el && el.value === 'month' ? 'month' : 'year';
+    }
 
     function parseNumber(value) {
       if (!value) return null;
@@ -282,15 +319,11 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       outInterest.textContent = '—';
       outTotal.textContent = '—';
       outPayoff.textContent = '—';
-
-      const rows = amortBody.querySelectorAll('tr');
-      rows.forEach((row) => {
-        const cells = row.querySelectorAll('td');
-        if (cells.length >= 3) {
-          cells[1].textContent = '—';
-          cells[2].textContent = '—';
-        }
-      });
+      lastSchedule = null;
+      amortBody.innerHTML =
+        '<tr class="border-t border-border"><td class="px-5 py-4 text-sm text-muted" colspan="3">Calculate to see the schedule.</td></tr>';
+      payoffBody.innerHTML =
+        '<tr class="border-t border-border"><td class="px-5 py-4 text-sm text-muted" colspan="5">Calculate to see the schedule.</td></tr>';
     }
 
     function updateDownPaymentPercent() {
@@ -327,23 +360,90 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       return new Intl.DateTimeFormat(undefined, { month: 'long', year: 'numeric' }).format(d);
     }
 
-    function amortizationSnapshot(P, annualRate, years, snapshotMonths) {
+    function computeMonthlySchedule(P, annualRate, years) {
       const n = years * 12;
       const r = annualRate / 100 / 12;
       const payment = computeMonthlyPayment(P, annualRate, years);
+      const rows = [];
       let balance = P;
-      let totalInterestPaid = 0;
-
-      const maxMonths = Math.min(snapshotMonths, n);
-      for (let i = 0; i < maxMonths; i += 1) {
+      let cumInterest = 0;
+      for (let i = 0; i < n; i += 1) {
         const interest = balance * r;
         const principalPaid = payment - interest;
-        totalInterestPaid += interest;
-        balance = balance - principalPaid;
+        cumInterest += interest;
+        balance -= principalPaid;
         if (balance < 0) balance = 0;
+        rows.push({ monthIndex: i, payment, interest, principalPaid, balance, cumInterest });
+      }
+      return rows;
+    }
+
+    function monthLabelFromStart(startYear, startMonthIndex, monthOffset) {
+      const t = addMonthsToYearMonth(startYear, startMonthIndex, monthOffset);
+      return formatMonthYear(t.year, t.monthIndex);
+    }
+
+    function renderMortgageScheduleTables() {
+      if (!lastSchedule || lastStartYear === null || lastTermYears === null) return;
+
+      const gran = scheduleGranularity();
+      amortPeriodHead.textContent = gran === 'month' ? 'Month' : 'Year';
+      payoffPeriodHead.textContent = gran === 'month' ? 'Month' : 'Year';
+
+      const n = lastSchedule.length;
+      let amortHtml = '';
+      let payoffHtml = '';
+
+      if (gran === 'year') {
+        for (let y = 1; y <= lastTermYears; y += 1) {
+          const endIdx = Math.min(y * 12, n) - 1;
+          if (endIdx < 0) continue;
+          const snap = lastSchedule[endIdx];
+          amortHtml += `<tr class="border-t border-border">
+            <td class="px-5 py-4 text-sm text-muted">Year ${y}</td>
+            <td class="px-5 py-4 text-sm text-text">${moneyUSD(snap.balance)}</td>
+            <td class="px-5 py-4 text-sm text-text">${moneyUSD(snap.cumInterest)}</td>
+          </tr>`;
+
+          let intY = 0;
+          let prY = 0;
+          const startIdx = (y - 1) * 12;
+          const endExclusive = Math.min(y * 12, n);
+          const numMonths = endExclusive - startIdx;
+          const payTotal = numMonths * lastSchedule[0].payment;
+          for (let k = startIdx; k < endExclusive; k += 1) {
+            intY += lastSchedule[k].interest;
+            prY += lastSchedule[k].principalPaid;
+          }
+          payoffHtml += `<tr class="border-t border-border">
+            <td class="px-5 py-4 text-sm text-muted">Year ${y}</td>
+            <td class="px-5 py-4 text-sm text-text">${moneyUSD(payTotal)}</td>
+            <td class="px-5 py-4 text-sm text-text">${moneyUSD(prY)}</td>
+            <td class="px-5 py-4 text-sm text-text">${moneyUSD(intY)}</td>
+            <td class="px-5 py-4 text-sm text-text">${moneyUSD(lastSchedule[endIdx].balance)}</td>
+          </tr>`;
+        }
+      } else {
+        for (let i = 0; i < n; i += 1) {
+          const snap = lastSchedule[i];
+          const label = monthLabelFromStart(lastStartYear, lastStartMonthIndex, i);
+          amortHtml += `<tr class="border-t border-border">
+            <td class="px-5 py-4 text-sm text-muted">${label}</td>
+            <td class="px-5 py-4 text-sm text-text">${moneyUSD(snap.balance)}</td>
+            <td class="px-5 py-4 text-sm text-text">${moneyUSD(snap.cumInterest)}</td>
+          </tr>`;
+          payoffHtml += `<tr class="border-t border-border">
+            <td class="px-5 py-4 text-sm text-muted">${label}</td>
+            <td class="px-5 py-4 text-sm text-text">${moneyUSD(snap.payment)}</td>
+            <td class="px-5 py-4 text-sm text-text">${moneyUSD(snap.principalPaid)}</td>
+            <td class="px-5 py-4 text-sm text-text">${moneyUSD(snap.interest)}</td>
+            <td class="px-5 py-4 text-sm text-text">${moneyUSD(snap.balance)}</td>
+          </tr>`;
+        }
       }
 
-      return { balance, totalInterestPaid };
+      amortBody.innerHTML = amortHtml;
+      payoffBody.innerHTML = payoffHtml;
     }
 
     function calculate() {
@@ -414,23 +514,11 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       outTotal.textContent = moneyUSD(totalPaid);
       outPayoff.textContent = formatMonthYear(payoff.year, payoff.monthIndex);
 
-      const snapshots = [
-        { label: 'Year 1', months: Math.min(12, n) },
-        { label: 'Year 5', months: Math.min(60, n) },
-        { label: 'Year 10', months: Math.min(120, n) },
-        { label: 'Final Year', months: n },
-      ];
-
-      const rows = amortBody.querySelectorAll('tr');
-      snapshots.forEach((snap, idx) => {
-        const row = rows[idx];
-        if (!row) return;
-        const cells = row.querySelectorAll('td');
-        if (cells.length < 3) return;
-        const s = amortizationSnapshot(loanAmount, annualRate, termYears, snap.months);
-        cells[1].textContent = moneyUSD(s.balance);
-        cells[2].textContent = moneyUSD(s.totalInterestPaid);
-      });
+      lastSchedule = computeMonthlySchedule(loanAmount, annualRate, termYears);
+      lastStartYear = startYear;
+      lastStartMonthIndex = startMonthIndex;
+      lastTermYears = termYears;
+      renderMortgageScheduleTables();
     }
 
     const now = new Date();
@@ -453,6 +541,12 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     termEl.addEventListener('change', calculate);
     rateEl.addEventListener('input', calculate);
     startEl.addEventListener('input', calculate);
+
+    document.querySelectorAll('input[name="mortgageGranularity"]').forEach((el) => {
+      el.addEventListener('change', () => {
+        if (lastSchedule) renderMortgageScheduleTables();
+      });
+    });
 
     updateDownPaymentPercent();
     renderEmpty();
